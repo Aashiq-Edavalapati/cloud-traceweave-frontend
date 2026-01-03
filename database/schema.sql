@@ -37,8 +37,7 @@ CREATE TABLE workspaces (
     name VARCHAR(100) NOT NULL,
     type VARCHAR(20) DEFAULT 'TEAM', -- 'PERSONAL' or 'TEAM'
     
-    -- SAFETY FIX: Removed ON DELETE CASCADE.
-    -- If a user is deleted, the workspace persists. Admin must transfer ownership first.
+    -- SAFETY: If user is deleted, workspace persists (set owner to NULL or handle in app)
     owner_id UUID REFERENCES users(id), 
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -77,14 +76,11 @@ CREATE TABLE collections (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE,
     
-    -- SAFETY FIX: Removed ON DELETE CASCADE.
-    -- App logic must handle "Soft Delete Children" recursively.
+    -- SAFETY: Soft Delete Children handled by App Logic, not DB Cascade
     parent_id UUID REFERENCES collections(id), 
     
     name VARCHAR(100) NOT NULL,
-    
-    -- NEW: System Flag for "Restored Requests" / "Trash"
-    is_system BOOLEAN DEFAULT FALSE, 
+    is_system BOOLEAN DEFAULT FALSE, -- For "Trash" or "Restored" folders
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -97,8 +93,7 @@ CREATE TABLE collections (
 CREATE TABLE requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     
-    -- SAFETY FIX: Removed ON DELETE CASCADE.
-    -- Prevents wiping requests when a folder is soft-deleted.
+    -- SAFETY: Soft Delete handled by App Logic
     collection_id UUID REFERENCES collections(id), 
     
     name VARCHAR(200) NOT NULL,
@@ -120,7 +115,7 @@ CREATE TABLE requests (
 -- 7. INDEXES & TRIGGERS
 -- ---------------------------------------------------------
 
--- Performance Indexes
+-- Performance Indexes (ignoring deleted items for speed)
 CREATE INDEX idx_requests_collection ON requests(collection_id) WHERE deleted_at IS NULL;
 CREATE INDEX idx_collections_parent ON collections(parent_id) WHERE deleted_at IS NULL;
 CREATE INDEX idx_workspaces_owner ON workspaces(owner_id);
