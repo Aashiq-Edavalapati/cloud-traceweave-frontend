@@ -20,3 +20,4 @@ out/
 
 # Python
 __pycache__
+.vscode/

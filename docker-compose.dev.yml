@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  core-api:
+    # Mount source code for Hot Reloading
+    volumes:
+      - ./backend/core-api/src:/app/src
+      - ./backend/core-api/package.json:/app/package.json
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://user:password@postgres:5432/traceweave
+      - MONGO_URL=mongodb://mongo:27017/traceweave_history
+    command: npm run dev
+
+  proxy-service:
+    volumes:
+      - ./backend/proxy-service:/app
+    environment:
+      - ENV=development
+
+  postgres:
+    ports:
+      - "5431:5432"
+
+  mongo:
+    ports:
+      - "27017:27017"
