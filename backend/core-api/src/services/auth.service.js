@@ -55,3 +55,54 @@ export default {
   createUser,
   loginUserWithEmailAndPassword,
 };
+
+/**
+ * Handles the logic of finding a user, creating one, or linking a new provider.
+ * @param {string} email - User's email from provider
+ * @param {string} provider - 'google' or 'github'
+ * @param {string} providerId - Unique ID from provider (e.g. sub)
+ * @param {object} profileData - { fullName, avatarUrl }
+ */
+export const findOrCreateUser = async (email, provider, providerId, profileData) => {
+  // 1. Try to find an existing IDENTITY
+  const existingIdentity = await prisma.identity.findUnique({
+    where: {
+      provider_providerId: {
+        provider,
+        providerId,
+      },
+    },
+    include: { user: true },
+  });
+
+  if (existingIdentity) {
+    return existingIdentity.user;
+  }
+
+  // 2. If no identity, check if USER exists by email
+  let user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  // 3. If User doesn't exist, Create User
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        email,
+        fullName: profileData.fullName,
+        avatarUrl: profileData.avatarUrl,
+      },
+    });
+  }
+
+  // 4. Create the Identity Link (Link Provider -> User)
+  await prisma.identity.create({
+    data: {
+      userId: user.id,
+      provider,
+      providerId,
+    },
+  });
+
+  return user;
+};

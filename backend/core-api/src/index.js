@@ -14,9 +14,8 @@ import { errorConverter, errorHandler } from "./middlewares/error.js";
 import ApiError from "./utils/ApiError.js";
 import routes from "./routes/index.js";
 import cookieParser from "cookie-parser";
-import passport from "passport";
+import passport from "./config/passport.js";
 import prisma from "./config/prisma.js";
-
 
 const app = express();
 
