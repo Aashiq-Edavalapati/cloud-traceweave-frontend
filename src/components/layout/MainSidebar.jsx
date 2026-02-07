@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 const SIDEBAR_ITEMS = [
   { id: 'Collections', icon: Layout, view: 'runner' },
-  { id: 'Monitor', icon: Activity, view: 'dashboard' },
+  { id: 'Monitor', icon: Activity, view: 'runner' },
   { id: 'Environments', icon: Layers, view: 'runner' },
   { id: 'History', icon: Clock, view: 'runner' },
   { id: 'APIs', icon: Box, view: 'runner' },
