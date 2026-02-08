@@ -18,7 +18,7 @@ const METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'];
 export default function HttpRequestPanel({ activeId }) {
   const store = useAppStore();
   const activeReqState = store.requestStates[activeId] || { url: '', method: 'GET' };
-  
+
   // Local UI State
   const [configTab, setConfigTab] = useState('Params');
   const [isRenaming, setIsRenaming] = useState(false);
@@ -62,7 +62,7 @@ export default function HttpRequestPanel({ activeId }) {
   // Derived State
   const isDirty = store.unsavedRequests.has(activeId);
   const activeItemName = activeReqState.name || 'Untitled Request';
-  
+
   let collectionName = 'Scratchpad';
   if (activeReqState.collectionId) {
     const parentCol = store.collections.find(c => c.id === activeReqState.collectionId);
@@ -81,25 +81,25 @@ export default function HttpRequestPanel({ activeId }) {
     <div className="flex flex-col h-full min-h-0">
       {/* --- REQUEST CONFIG BAR --- */}
       <div className="p-4 border-b border-border-subtle shrink-0">
-        
+
         {/* Breadcrumbs & Rename */}
         <div className="flex items-center justify-between mb-3 h-6">
           <div className="flex items-center gap-2 text-xs text-text-secondary select-none w-full">
-            <span className={!activeReqState.collectionId ? 'italic opacity-70' : ''}>{collectionName}</span> 
+            <span className={!activeReqState.collectionId ? 'italic opacity-70' : ''}>{collectionName}</span>
             <span>/</span>
             {isRenaming ? (
-              <input 
-                autoFocus 
-                type="text" 
-                value={tempName} 
-                onChange={(e) => setTempName(e.target.value)} 
-                onBlur={handleRenameSave} 
-                onKeyDown={(e) => e.key === 'Enter' && handleRenameSave()} 
-                className="bg-bg-input text-text-primary border border-brand-orange px-1 py-0.5 rounded focus:outline-none" 
+              <input
+                autoFocus
+                type="text"
+                value={tempName}
+                onChange={(e) => setTempName(e.target.value)}
+                onBlur={handleRenameSave}
+                onKeyDown={(e) => e.key === 'Enter' && handleRenameSave()}
+                className="bg-bg-input text-text-primary border border-brand-orange px-1 py-0.5 rounded focus:outline-none"
               />
             ) : (
-              <span 
-                className="text-text-primary font-medium cursor-text hover:border-b hover:border-text-secondary" 
+              <span
+                className="text-text-primary font-medium cursor-text hover:border-b hover:border-text-secondary"
                 onDoubleClick={handleRenameStart}
               >
                 {activeItemName}
@@ -107,8 +107,8 @@ export default function HttpRequestPanel({ activeId }) {
             )}
             <span className="ml-2 text-[10px] px-1.5 py-0.5 bg-bg-panel border border-border-subtle rounded text-text-secondary">HTTP</span>
           </div>
-          <button 
-            onClick={handleSaveClick} 
+          <button
+            onClick={handleSaveClick}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border transition ${isDirty ? 'bg-bg-input border-brand-orange text-text-primary' : 'bg-bg-input border-border-subtle text-text-secondary'}`}
           >
             <Save size={14} /> {isDirty ? 'Save*' : 'Saved'}
@@ -122,13 +122,13 @@ export default function HttpRequestPanel({ activeId }) {
               {activeReqState.method}
             </span>
             <ChevronDown size={12} className="ml-auto text-text-secondary" />
-            
+
             {/* Method Dropdown */}
             <div className="absolute top-full left-0 w-[100px] bg-bg-panel border border-border-subtle rounded shadow-lg hidden group-hover:block z-50">
               {METHODS.map(m => (
-                <div 
-                  key={m} 
-                  onClick={() => store.updateActiveRequest('method', m)} 
+                <div
+                  key={m}
+                  onClick={() => store.updateActiveRequest('method', m)}
                   className="px-3 py-2 text-xs hover:bg-brand-blue hover:text-white"
                 >
                   {m}
@@ -175,7 +175,7 @@ export default function HttpRequestPanel({ activeId }) {
       </div>
 
       {/* --- RESPONSE PANE --- */}
-      <div style={{ height: store.responsePaneHeight }} className="shrink-0 overflow-hidden border-t border-border-subtle">
+      <div style={{ height: store.responsePaneHeight }} className="shrink-0 border-t border-border-subtle relative z-30">
         <ResponsePane height={store.responsePaneHeight} />
       </div>
 
