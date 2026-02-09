@@ -31,7 +31,8 @@ export const WorkspacesList = ({ workspaces }) => {
         </div>
       </div>
 
-      <motion.div 
+      <motion.div
+        key={workspaces.length}
         variants={containerVariants}
         initial="hidden"
         animate="show"
@@ -51,20 +52,20 @@ export const WorkspacesList = ({ workspaces }) => {
                   </div>
                   <MoreVertical size={16} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                
+
                 <div className="grid grid-cols-3 gap-4 border-t border-border-subtle pt-4">
-                   <div>
-                     <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Requests</p>
-                     <p className="text-sm font-mono">{ws.metrics.req}</p>
-                   </div>
-                   <div>
-                     <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Errors</p>
-                     <p className={`text-sm font-mono ${ws.metrics.err === '0%' ? 'text-text-primary' : 'text-red-400'}`}>{ws.metrics.err}</p>
-                   </div>
-                   <div>
-                     <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Latency</p>
-                     <p className="text-sm font-mono">{ws.metrics.lat}</p>
-                   </div>
+                  <div>
+                    <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Requests</p>
+                    <p className="text-sm font-mono">{ws.metrics.req}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Errors</p>
+                    <p className={`text-sm font-mono ${ws.metrics.err === '0%' ? 'text-text-primary' : 'text-red-400'}`}>{ws.metrics.err}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Latency</p>
+                    <p className="text-sm font-mono">{ws.metrics.lat}</p>
+                  </div>
                 </div>
               </div>
             </Link>

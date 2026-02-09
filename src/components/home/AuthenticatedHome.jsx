@@ -21,7 +21,9 @@ export default function AuthenticatedHome() {
 
   useEffect(() => {
     fetchWorkspaces();
-  }, []);
+  }, []); // Run on mount
+
+  const isLoading = availableWorkspaces.length === 0 && !user; // Simple heuristic or use store loading state if available
 
   const workspaces = availableWorkspaces.map(ws => ({
     id: ws.id,
