@@ -30,9 +30,9 @@ export const useAppStore = create((set, get) => ({
     fetchWorkspaces: async () => {
         try {
             set({ isLoadingWorkspaces: true });
-            const data = await workspaceApi.getMyWorkspaces();
+            const response = await workspaceApi.getMyWorkspaces();
             // Backend returns: { data: [...] }
-            const workspaces = data.data || [];
+            const workspaces = response.data || [];
 
             let activeId = get().activeWorkspaceId;
             if (!activeId && workspaces.length > 0) {
@@ -52,7 +52,10 @@ export const useAppStore = create((set, get) => ({
             }
         } catch (error) {
             console.warn("Failed to fetch workspaces", error);
-            set({ isLoadingWorkspaces: false });
+            set({ 
+                isLoadingWorkspaces: false,
+                availableWorkspaces: [] 
+            });
         }
     },
 

@@ -3,6 +3,9 @@ import { Layout, Clock, Box, Layers, Settings, Activity } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import logo from '@/assets/traceWeaveLogo.png';
 import Image from 'next/image';
+import { useState, useRef, useEffect } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { LogOut } from 'lucide-react';
 
 const SIDEBAR_ITEMS = [
   { id: 'Collections', icon: Layout, view: 'runner' },
@@ -59,12 +62,57 @@ export default function MainSidebar() {
       </div>
 
       {/* Footer */}
-      <div className="pb-5 flex flex-col items-center gap-5">
-        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center text-xs font-bold text-white">
-          AE
-        </div>
+      <div className="pb-5 flex flex-col items-center gap-5 relative">
+        <UserPopup />
         <Settings size={22} className="text-text-secondary hover:text-text-primary hover:rotate-90 transition-all duration-500 cursor-pointer" />
       </div>
     </aside>
   );
 }
+
+const UserPopup = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuthStore();
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={popupRef}>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center text-xs font-bold text-white cursor-pointer hover:shadow-lg transition-shadow"
+      >
+        {user?.name?.[0] || 'U'}
+      </div>
+
+      {isOpen && (
+        <div className="absolute bottom-full left-10 mb-2 w-48 bg-bg-panel border border-border-strong rounded-lg shadow-xl py-1 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="px-4 py-3 border-b border-border-subtle bg-bg-base/50">
+            <p className="text-sm font-semibold text-text-primary">{user?.name || 'User'}</p>
+            <p className="text-xs text-text-secondary truncate">{user?.email}</p>
+          </div>
+          <div className="p-1">
+            <button className="w-full text-left px-3 py-2 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-input rounded-md transition-colors flex items-center gap-2">
+              <Settings size={14} /> Settings
+            </button>
+            <button
+              onClick={logout}
+              className="w-full text-left px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-md transition-colors flex items-center gap-2"
+            >
+              <LogOut size={14} /> Sign Out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
