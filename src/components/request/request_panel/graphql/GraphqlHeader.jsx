@@ -55,7 +55,10 @@ export default function GraphqlHeader({ activeId, configTab, setConfigTab, onOpe
             </span>
           )}
 
-          <ProtocolSwitcher activeId={activeId} />
+          <ProtocolSwitcher 
+            currentProtocol={activeReqState.protocol || 'graphql'} 
+            onChange={(id) => store.updateActiveRequest('protocol', id)} 
+          />
         </div>
         
         <div className="flex gap-2 shrink-0">

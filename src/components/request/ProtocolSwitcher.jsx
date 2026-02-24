@@ -1,19 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { Check, ArrowRightLeft, Box, Zap, Activity, ChevronDown } from 'lucide-react';
-import { useAppStore } from '@/store/useAppStore';
 
 const PROTOCOLS = [
   { id: 'http', label: 'HTTP', icon: ArrowRightLeft, color: 'text-emerald-500' },
   { id: 'graphql', label: 'GraphQL', icon: Box, color: 'text-pink-500' },
-  { id: 'grpc', label: 'gRPC', icon: Zap, color: 'text-blue-400' },
-  { id: 'ws', label: 'WebSocket', icon: Activity, color: 'text-orange-400' },
+  // { id: 'grpc', label: 'gRPC', icon: Zap, color: 'text-blue-400' },
+  { id: 'websocket', label: 'WebSocket', icon: Activity, color: 'text-orange-400' },
 ];
 
-export default function ProtocolSwitcher({ activeId }) {
-  const store = useAppStore();
-  const activeReqState = store.requestStates[activeId] || {};
-  const currentProtocolId = activeReqState.protocol || 'http';
-  const activeProtocol = PROTOCOLS.find(p => p.id === currentProtocolId) || PROTOCOLS[0];
+export default function ProtocolSwitcher({ currentProtocol = 'http', onChange }) {
+  const activeProtocol = PROTOCOLS.find(p => p.id === currentProtocol) || PROTOCOLS[0];
   const ActiveIcon = activeProtocol.icon;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -48,12 +44,13 @@ export default function ProtocolSwitcher({ activeId }) {
           </div>
           {PROTOCOLS.map((proto) => {
             const Icon = proto.icon;
-            const isSelected = proto.id === currentProtocolId;
+            const isSelected = proto.id === currentProtocol;
             return (
               <div
                 key={proto.id}
-                onClick={() => {
-                  store.updateActiveRequest('protocol', proto.id);
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(proto.id);
                   setIsOpen(false);
                 }}
                 className={`px-3 py-2 text-xs flex items-center gap-2 cursor-pointer transition-colors ${

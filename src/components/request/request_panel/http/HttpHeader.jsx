@@ -56,7 +56,10 @@ export default function HttpHeader({ activeId, configTab, setConfigTab, onOpenSa
             </span>
           )}
 
-          <ProtocolSwitcher activeId={activeId} />
+          <ProtocolSwitcher 
+            currentProtocol={activeReqState.protocol || 'http'} 
+            onChange={(id) => store.updateActiveRequest('protocol', id)} 
+          />
         </div>
         
         <div className="flex gap-2 shrink-0">

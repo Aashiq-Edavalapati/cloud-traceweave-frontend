@@ -164,6 +164,7 @@ export const createExecutionSlice = (set, get) => ({
             const envs = state.workspaceEnvironments[state.activeWorkspaceId] || [];
             const activeEnv = envs[state.selectedEnvIndex];
             const envId = activeEnv ? activeEnv.id : null;
+            const envValues = activeEnv?.variables || {};
 
             let apiPayload;
 
@@ -195,9 +196,9 @@ export const createExecutionSlice = (set, get) => ({
             // Otherwise, normal JSON payload
             else {
                 if (req.isDetached) {
-                    apiPayload = { workspaceId: state.activeWorkspaceId, protocol: req.protocol, config: finalConfig, environmentId: envId || null };
+                    apiPayload = { workspaceId: state.activeWorkspaceId, protocol: req.protocol, config: finalConfig, environmentId: envId,  environmentValues: envValues || null };
                 } else {
-                    apiPayload = { environmentId: envId || null, overrides: { config: finalConfig } };
+                    apiPayload = { environmentId: envId, environmentValues: envValues || null, overrides: { config: finalConfig } };
                 }
             }
 
@@ -211,6 +212,9 @@ export const createExecutionSlice = (set, get) => ({
                     await get().saveRequest(activeId);
                 }
                 const result = await requestApi.executeRequest(activeId, apiPayload);
+                console.log("===== RENDERER RECEIVED =====");
+                console.log(result);
+                console.log("=============================");
                 get().addToHistory(req, result);
                 set({ isLoading: false, response: result });
             }
