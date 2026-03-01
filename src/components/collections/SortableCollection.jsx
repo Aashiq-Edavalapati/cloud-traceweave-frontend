@@ -11,20 +11,12 @@ import { useModal } from '@/components/providers/ModalProvider';
 
 export function SortableCollection({ collection, activeRequestId, onToggle, onRequestClick }) {
   const store = useAppStore();
-<<<<<<< Updated upstream
-  // 1. Destructure showPrompt alongside showConfirm
   const { showConfirm, showPrompt } = useModal();
-=======
-<<<<<<< Updated upstream
-=======
-  const { showConfirm, showPrompt } = useModal();
->>>>>>> Stashed changes
 
   const allCollections = store.getFilteredCollections();
   const childCollections = allCollections.filter(c => c.parentId === collection.id);
->>>>>>> Stashed changes
 
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging, isOver } = useSortable({
     id: collection.id,
     data: { type: 'collection' },
     disabled: collection.pinned
@@ -70,37 +62,64 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
     ...(collection.items || []).map(i => i.id)
   ];
 
+  const isEmpty = childCollections.length === 0 && (!collection.items || collection.items.length === 0);
+
+  // Helper to check if this folder (or its children) contains the active request
+  const isFolderActive = () => {
+    if (!activeRequestId) return false;
+    // Check direct items
+    if (collection.items?.some(req => req.id === activeRequestId)) return true;
+    // Check sub-collections recursively
+    const checkChildren = (children) => {
+      for (const child of children) {
+        if (child.items?.some(req => req.id === activeRequestId)) return true;
+        const subChildren = allCollections.filter(c => c.parentId === child.id);
+        if (checkChildren(subChildren)) return true;
+      }
+      return false;
+    };
+    return checkChildren(childCollections);
+  };
+
+  const hasActiveItem = isFolderActive();
+
   return (
     <>
-      <div ref={setNodeRef} style={style} className="mb-1 select-none">
+      <div ref={setNodeRef} style={style} className="mb-1 select-none min-w-0">
         <div
-          className="group flex items-center gap-2 px-2 py-1.5 cursor-pointer text-text-secondary hover:text-text-primary rounded hover:bg-bg-panel relative"
+          // Added conditional classes for the active highlight
+          className={`group flex items-center gap-2 px-2 py-1.5 cursor-pointer rounded relative transition-colors ${
+            hasActiveItem && collection.collapsed 
+              ? 'bg-brand-orange/5 text-brand-orange' 
+              : 'text-text-secondary hover:text-text-primary hover:bg-bg-panel'
+          } ${isOver && !isDragging ? 'ring-2 ring-brand-orange ring-inset bg-brand-orange/10' : ''}`}
           onClick={() => onToggle(collection.id)}
           onContextMenu={handleContextMenu}
         >
           {collection.pinned ? (
-            <div className="w-4 h-4" />
+            <div className="w-4 h-4 shrink-0" />
           ) : (
             <div
               {...attributes}
               {...listeners}
-              className="opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing p-1 text-text-tertiary hover:text-text-primary"
+              className="opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing p-1 text-text-tertiary hover:text-text-primary shrink-0"
               onClick={(e) => e.stopPropagation()}
             >
               <GripVertical size={12} />
             </div>
           )}
 
-          <div className="p-1 text-brand-orange/80 relative">
+          <div className={`p-1 relative shrink-0 ${hasActiveItem && collection.collapsed ? 'text-brand-orange' : 'text-brand-orange/80'}`}>
             {collection.collapsed ? <Folder size={14} /> : <FolderOpen size={14} />}
             {collection.pinned && <div className="absolute -top-1 -right-1 bg-bg-base rounded-full p-[1px]"><Pin size={8} className="text-text-primary fill-current" /></div>}
           </div>
 
-          <span className="text-xs font-semibold select-none flex-1 truncate">
+          {/* min-w-0 ensures truncation works deeply nested */}
+          <span className="text-xs font-semibold select-none flex-1 truncate min-w-0">
             {collection.name}
           </span>
 
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
             <div
               role="button"
               onClick={handleCreateSubCollection}
@@ -126,35 +145,39 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
             </div>
           </div>
 
-          <div className="text-text-muted">
+          <div className="text-text-muted shrink-0">
             {collection.collapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
           </div>
         </div>
 
         {!collection.collapsed && (
-          <div className="flex flex-col gap-[2px] mt-1 pl-1 border-l border-border-subtle ml-3">
-            <SortableContext items={sortableItemIds} strategy={verticalListSortingStrategy}>
-              {childCollections.map(childCol => (
-                <SortableCollection
-                  key={childCol.id}
-                  collection={childCol}
-                  activeRequestId={activeRequestId}
-                  onToggle={onToggle}
-                  onRequestClick={onRequestClick}
-                />
-              ))}
+          <div className={`flex flex-col gap-[2px] mt-1 pl-1 border-l ml-3 ${hasActiveItem ? 'border-brand-orange/30' : 'border-border-subtle'}`}>
+            {isEmpty ? (
+              <div className="text-[10px] text-text-muted italic py-1 pl-6">Empty collection</div>
+            ) : (
+              <SortableContext items={sortableItemIds} strategy={verticalListSortingStrategy}>
+                {childCollections.map(childCol => (
+                  <SortableCollection
+                    key={childCol.id}
+                    collection={childCol}
+                    activeRequestId={activeRequestId}
+                    onToggle={onToggle}
+                    onRequestClick={onRequestClick}
+                  />
+                ))}
 
-              {collection.items && collection.items.map(req => (
-                <SortableRequest
-                  key={req.id}
-                  {...req}
-                  protocol={req.protocol || 'http'}
-                  method={req.config?.method || req.method || 'GET'}
-                  active={activeRequestId === req.id}
-                  onClick={() => onRequestClick(req.id)}
-                />
-              ))}
-            </SortableContext>
+                {collection.items && collection.items.map(req => (
+                  <SortableRequest
+                    key={req.id}
+                    {...req}
+                    protocol={req.protocol || 'http'}
+                    method={req.config?.method || req.method || 'GET'}
+                    active={activeRequestId === req.id}
+                    onClick={() => onRequestClick(req.id)}
+                  />
+                ))}
+              </SortableContext>
+            )}
           </div>
         )}
       </div>
@@ -164,39 +187,7 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
           x={contextMenu.x}
           y={contextMenu.y}
           onClose={() => setContextMenu({ x: null, y: null })}
-          
-          // 2. Updated onRename using custom showPrompt
           onRename={() => {
-<<<<<<< Updated upstream
-            setContextMenu({ x: null, y: null }); // Close menu first
-            
-            showPrompt(
-              "Enter a new name for this collection:",
-              (newName) => {
-                if (newName && newName.trim() !== '') {
-                  store.renameItem(collection.id, newName.trim());
-                }
-              },
-              collection.name,
-              "Rename Collection"
-            );
-          }}
-
-=======
-<<<<<<< Updated upstream
-            console.log("Rename clicked for collection:", collection.id);
-            const newName = prompt("Rename Collection:", collection.name);
-            console.log("User entered:", newName);
-            console.log("store.renameItem exists?", typeof store.renameItem);
-            if (newName) {
-              console.log("Calling renameItem...");
-              store.renameItem(collection.id, newName);
-            }
-            setContextMenu({ x: null, y: null });
-          }}
-          onDuplicate={() => { store.duplicateItem(collection.id); setContextMenu({ x: null, y: null }); }}
-          onDelete={() => { store.deleteItem(collection.id); setContextMenu({ x: null, y: null }); }}
-=======
             setContextMenu({ x: null, y: null });
             showPrompt(
               "Enter a new name for this collection:",
@@ -209,27 +200,10 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
               "Rename Collection"
             );
           }}
->>>>>>> Stashed changes
           onDuplicate={() => { 
             store.duplicateItem(collection.id); 
             setContextMenu({ x: null, y: null }); 
           }}
-<<<<<<< Updated upstream
-          
-          // 3. Updated onDelete using custom showConfirm
-          onDelete={() => { 
-            setContextMenu({ x: null, y: null }); // Close menu first
-            
-            showConfirm(
-              `Are you sure you want to delete the collection "${collection.name}"?`,
-              () => {
-                store.deleteItem(collection.id);
-              },
-              "Delete Collection"
-            );
-          }}
-          
-=======
           onDelete={() => { 
             setContextMenu({ x: null, y: null });
             showConfirm(
@@ -238,8 +212,6 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
               "Delete Collection"
             );
           }}
->>>>>>> Stashed changes
->>>>>>> Stashed changes
           isPinned={collection.pinned}
           onPin={() => { 
             store.togglePinItem(collection.id); 

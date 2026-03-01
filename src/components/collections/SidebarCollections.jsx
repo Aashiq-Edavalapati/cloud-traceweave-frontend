@@ -1,4 +1,5 @@
 'use client';
+
 import {
   DndContext,
   closestCenter,
@@ -8,11 +9,11 @@ import {
   useSensors,
   DragOverlay,
 } from '@dnd-kit/core';
+import { createPortal } from 'react-dom';
+import { useEffect, useState } from 'react';
+import { SortableCollection } from './SortableCollection';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useAppStore } from '@/store/useAppStore';
-import { SortableCollection } from './SortableCollection';
-import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 
 export default function SidebarCollections() {
   const {

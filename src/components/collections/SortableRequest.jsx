@@ -29,7 +29,8 @@ export function SortableRequest({ id, protocol, method, name, active, pinned, on
     setNodeRef,
     transform,
     transition,
-    isDragging
+    isDragging,
+    isOver
   } = useSortable({ 
     id, 
     data: { type: 'request' },
@@ -94,12 +95,18 @@ export function SortableRequest({ id, protocol, method, name, active, pinned, on
         style={style}
         className={cn(
           "group flex items-center gap-2 px-2 py-1.5 ml-3 mr-2 rounded-md cursor-pointer border border-transparent transition-all select-none relative",
-          active ? "bg-bg-input border-border-subtle text-text-primary" : "text-text-secondary hover:bg-bg-panel hover:text-text-primary"
+          active ? "bg-bg-input border-border-subtle text-text-primary" : "text-text-secondary hover:bg-bg-panel hover:text-text-primary",
+          isOver && !isDragging ? "ring-1 ring-brand-orange/50" : "" 
         )}
         onClick={handleSingleClick}
         onDoubleClick={handleDoubleClick}
         onContextMenu={handleContextMenu}
       >
+        {/* Drag indicator line */}
+        {isOver && !isDragging && (
+           <div className="absolute -bottom-[2px] left-0 right-0 h-[2px] bg-brand-orange z-50 rounded-full shadow-[0_0_8px_rgba(255,100,0,0.8)]" />
+        )}
+
         {/* DRAG HANDLE - Conditional Rendering */}
         {pinned ? (
           <div className="w-3 h-3" /> // Spacer

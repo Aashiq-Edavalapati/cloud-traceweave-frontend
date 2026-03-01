@@ -1,13 +1,28 @@
 import { collectionApi } from '@/api/collection.api';
+import { requestApi } from '@/api/request.api'; // <-- Added this import
 
 export const createCollectionSlice = (set, get) => ({
     collections: [],
-    requestStates: {}, // Assuming this is managed here or merged from another slice
+    requestStates: {}, 
 
     fetchCollections: async (workspaceId) => {
         try {
             const data = await collectionApi.getCollections(workspaceId);
-            const rawCollections = data || [];
+            
+            // Flatten the nested tree from the backend into a 1D array
+            const flattenCollections = (cols) => {
+                let result = [];
+                cols.forEach(c => {
+                    const { children, ...rest } = c;
+                    result.push(rest);
+                    if (children && children.length > 0) {
+                        result = result.concat(flattenCollections(children));
+                    }
+                });
+                return result;
+            };
+
+            const rawCollections = flattenCollections(data || []);
 
             const newRequestStates = { ...get().requestStates };
             const normalizedCollections = rawCollections.map(col => {
@@ -22,7 +37,7 @@ export const createCollectionSlice = (set, get) => ({
                     ...col,
                     workspaceId: workspaceId,
                     itemIds: itemIds,
-                    parentId: col.parentId || null, // Ensure parentId is tracked
+                    parentId: col.parentId || null, 
                     requests: undefined 
                 };
             });
@@ -45,7 +60,6 @@ export const createCollectionSlice = (set, get) => ({
             }));
     },
 
-    // Updated to accept parentId
     createCollection: async (name, parentId = null) => {
         const { activeWorkspaceId } = get();
         try {
@@ -97,12 +111,51 @@ export const createCollectionSlice = (set, get) => ({
     },
 
     deleteCollection: async (id) => {
+        const { collections } = get();
+        const originalCollections = get().collections;
+        const originalRequestStates = get().requestStates;
+
+        // Recursive helper to find all descendant collection IDs
+        const getAllDescendantIds = (parentId, allCols) => {
+            let ids = [];
+            const children = allCols.filter(c => c.parentId === parentId);
+            children.forEach(child => {
+                ids.push(child.id);
+                ids = ids.concat(getAllDescendantIds(child.id, allCols));
+            });
+            return ids;
+        };
+
+        const idsToDelete = [id, ...getAllDescendantIds(id, collections)];
+
+        // Update frontend state immediately
+        set(state => {
+            const newRequestStates = { ...state.requestStates };
+            const collectionsToKeep = state.collections.filter(c => !idsToDelete.includes(c.id));
+            
+            idsToDelete.forEach(colId => {
+                const col = state.collections.find(c => c.id === colId);
+                if (col && col.itemIds) {
+                    col.itemIds.forEach(reqId => delete newRequestStates[reqId]);
+                }
+            });
+
+            return { 
+                collections: collectionsToKeep,
+                requestStates: newRequestStates
+            };
+        });
+
         try {
             await collectionApi.deleteCollection(id);
-            set(state => ({ 
-                collections: state.collections.filter(c => c.id !== id && c.parentId !== id) // Also remove immediate children from state
-            }));
-        } catch (e) { console.warn(e); }
+        } catch (e) { 
+            console.warn("Failed to delete collection from DB", e); 
+           
+            set({ 
+                collections: originalCollections, 
+                requestStates: originalRequestStates 
+            });
+        }
     },
 
     toggleCollectionPin: (id) => set(state => {
@@ -130,10 +183,10 @@ export const createCollectionSlice = (set, get) => ({
 
         if (!activeCol || !overCol || activeCol.pinned || overCol.pinned) return {};
 
-        // Anti-Cyclic Check: Prevent dragging a parent into its own child
+        // Anti-Cyclic Check
         let currentParent = overCol.parentId;
         while (currentParent) {
-            if (currentParent === activeId) return {}; // Abort move
+            if (currentParent === activeId) return {}; 
             const parent = state.collections.find(c => c.id === currentParent);
             currentParent = parent?.parentId;
         }
@@ -145,13 +198,22 @@ export const createCollectionSlice = (set, get) => ({
             const newCollections = [...state.collections];
             const [moved] = newCollections.splice(activeIndex, 1);
             
-            // Make them siblings by inheriting the overCol's parentId
             moved.parentId = overCol.parentId || null;
-            
             newCollections.splice(overIndex, 0, moved);
 
-            // Optional: You can trigger an async API call here to persist the parentId change
-            // collectionApi.updateCollection(activeId, { parentId: moved.parentId }).catch(console.warn);
+            // Recalculate order for siblings in the new parent
+            const siblings = newCollections.filter(c => c.parentId === moved.parentId);
+            siblings.forEach((sibling, idx) => {
+                // Update state order
+                sibling.order = idx; 
+                // Only send API calls for the ones that actually changed position (optimization)
+                if (sibling.id === activeId) {
+                    collectionApi.updateCollection(sibling.id, { 
+                        parentId: sibling.parentId, 
+                        order: idx 
+                    }).catch(console.warn);
+                }
+            });
 
             return { collections: newCollections };
         }
@@ -178,9 +240,11 @@ export const createCollectionSlice = (set, get) => ({
         const sCol = newCollections.find(c => c.id === sourceCol.id);
         const tCol = newCollections.find(c => c.id === targetCol.id);
 
+        let newIndex;
+
         if (sCol.id === tCol.id) {
             const oldIndex = sCol.itemIds.indexOf(activeId);
-            let newIndex = overId === tCol.id ? 0 : sCol.itemIds.indexOf(overId);
+            newIndex = overId === tCol.id ? 0 : sCol.itemIds.indexOf(overId);
 
             if (newIndex === 0 && sCol.itemIds.length > 0) {
                 const topItemId = sCol.itemIds[0];
@@ -192,7 +256,7 @@ export const createCollectionSlice = (set, get) => ({
             const oldIndex = sCol.itemIds.indexOf(activeId);
             sCol.itemIds.splice(oldIndex, 1);
 
-            let newIndex = overId === tCol.id ? tCol.itemIds.length : tCol.itemIds.indexOf(overId);
+            newIndex = overId === tCol.id ? tCol.itemIds.length : tCol.itemIds.indexOf(overId);
 
             if (newIndex < tCol.itemIds.length) {
                 const itemAtNewPos = state.requestStates[tCol.itemIds[newIndex]];
@@ -200,12 +264,16 @@ export const createCollectionSlice = (set, get) => ({
             }
 
             tCol.itemIds.splice(newIndex, 0, activeId);
-
-            const newRequestStates = { ...state.requestStates };
-            newRequestStates[activeId] = { ...newRequestStates[activeId], collectionId: targetCol.id };
-            return { collections: newCollections, requestStates: newRequestStates };
         }
 
-        return { collections: newCollections };
+        // Update DB with new order index and collectionId
+        requestApi.updateRequest(activeId, { 
+            collectionId: targetCol.id,
+            order: newIndex 
+        }).catch(console.warn);
+
+        const newRequestStates = { ...state.requestStates };
+        newRequestStates[activeId] = { ...newRequestStates[activeId], collectionId: targetCol.id };
+        return { collections: newCollections, requestStates: newRequestStates };
     }),
 });
