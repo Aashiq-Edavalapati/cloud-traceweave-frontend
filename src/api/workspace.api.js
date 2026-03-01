@@ -33,6 +33,11 @@ export const workspaceApi = {
         return response.data;
     },
 
+    getGlobalHistory: async (params = { page: 1, limit: 20 }) => {
+        const response = await api.get(`/workspaces/user/global-history`, { params });
+        return response.data;
+    },
+
     addMember: async (workspaceId, email, role) => {
         // Backend expects { email, role } in body
         const response = await api.post(`/workspaces/${workspaceId}/members`, { email, role });

@@ -2,6 +2,7 @@ import { collectionApi } from '@/api/collection.api';
 
 export const createCollectionSlice = (set, get) => ({
     collections: [],
+    requestStates: {}, // Assuming this is managed here or merged from another slice
 
     fetchCollections: async (workspaceId) => {
         try {
@@ -13,7 +14,6 @@ export const createCollectionSlice = (set, get) => ({
                 const colRequests = col.requests || [];
                 const itemIds = colRequests.map(r => r.id);
 
-                // Add requests to state map
                 colRequests.forEach(r => {
                     newRequestStates[r.id] = { ...r, collectionId: col.id };
                 });
@@ -22,6 +22,7 @@ export const createCollectionSlice = (set, get) => ({
                     ...col,
                     workspaceId: workspaceId,
                     itemIds: itemIds,
+                    parentId: col.parentId || null, // Ensure parentId is tracked
                     requests: undefined 
                 };
             });
@@ -44,11 +45,20 @@ export const createCollectionSlice = (set, get) => ({
             }));
     },
 
-    createCollection: async (name) => {
+    // Updated to accept parentId
+    createCollection: async (name, parentId = null) => {
         const { activeWorkspaceId } = get();
         try {
-            const data = await collectionApi.createCollection(activeWorkspaceId, { name: name || 'New Collection' });
-            const newCol = { ...data, itemIds: [], workspaceId: activeWorkspaceId };
+            const payload = { name: name || 'New Collection' };
+            if (parentId) payload.parentId = parentId;
+
+            const data = await collectionApi.createCollection(activeWorkspaceId, payload);
+            const newCol = { 
+                ...data, 
+                itemIds: [], 
+                workspaceId: activeWorkspaceId,
+                parentId: parentId 
+            };
             set(state => ({ collections: [...state.collections, newCol] }));
         } catch (error) {
             console.warn("Create Collection Error:", error.response?.data || error);
@@ -61,20 +71,18 @@ export const createCollectionSlice = (set, get) => ({
         )
     })),
 
-    // Used by duplicateItem facade
     duplicateCollection: async (id) => {
         const { activeWorkspaceId, collections } = get();
         const collection = collections.find(c => c.id === id);
         
         if (collection) {
             try {
-                const newColData = await collectionApi.createCollection(activeWorkspaceId, {
-                    name: `${collection.name} Copy`
-                });
-                const newCol = { ...newColData, itemIds: [], workspaceId: activeWorkspaceId };
-                set(state => ({
-                    collections: [...state.collections, newCol]
-                }));
+                const payload = { name: `${collection.name} Copy` };
+                if (collection.parentId) payload.parentId = collection.parentId;
+
+                const newColData = await collectionApi.createCollection(activeWorkspaceId, payload);
+                const newCol = { ...newColData, itemIds: [], workspaceId: activeWorkspaceId, parentId: collection.parentId };
+                set(state => ({ collections: [...state.collections, newCol] }));
             } catch (e) { console.warn(e); }
         }
     },
@@ -92,12 +100,11 @@ export const createCollectionSlice = (set, get) => ({
         try {
             await collectionApi.deleteCollection(id);
             set(state => ({ 
-                collections: state.collections.filter(c => c.id !== id) 
+                collections: state.collections.filter(c => c.id !== id && c.parentId !== id) // Also remove immediate children from state
             }));
         } catch (e) { console.warn(e); }
     },
 
-    // Used by togglePinItem facade
     toggleCollectionPin: (id) => set(state => {
         const colIndex = state.collections.findIndex(c => c.id === id);
         if (colIndex === -1) return {};
@@ -121,7 +128,15 @@ export const createCollectionSlice = (set, get) => ({
         const activeCol = state.collections.find(c => c.id === activeId);
         const overCol = state.collections.find(c => c.id === overId);
 
-        if (activeCol?.pinned || overCol?.pinned) return {};
+        if (!activeCol || !overCol || activeCol.pinned || overCol.pinned) return {};
+
+        // Anti-Cyclic Check: Prevent dragging a parent into its own child
+        let currentParent = overCol.parentId;
+        while (currentParent) {
+            if (currentParent === activeId) return {}; // Abort move
+            const parent = state.collections.find(c => c.id === currentParent);
+            currentParent = parent?.parentId;
+        }
 
         const activeIndex = state.collections.findIndex(c => c.id === activeId);
         const overIndex = state.collections.findIndex(c => c.id === overId);
@@ -129,7 +144,15 @@ export const createCollectionSlice = (set, get) => ({
         if (activeIndex !== -1 && overIndex !== -1) {
             const newCollections = [...state.collections];
             const [moved] = newCollections.splice(activeIndex, 1);
+            
+            // Make them siblings by inheriting the overCol's parentId
+            moved.parentId = overCol.parentId || null;
+            
             newCollections.splice(overIndex, 0, moved);
+
+            // Optional: You can trigger an async API call here to persist the parentId change
+            // collectionApi.updateCollection(activeId, { parentId: moved.parentId }).catch(console.warn);
+
             return { collections: newCollections };
         }
         return {};
@@ -155,30 +178,21 @@ export const createCollectionSlice = (set, get) => ({
         const sCol = newCollections.find(c => c.id === sourceCol.id);
         const tCol = newCollections.find(c => c.id === targetCol.id);
 
-        // Same Collection Sort
         if (sCol.id === tCol.id) {
             const oldIndex = sCol.itemIds.indexOf(activeId);
-            let newIndex;
-            if (overId === tCol.id) newIndex = 0;
-            else newIndex = sCol.itemIds.indexOf(overId);
+            let newIndex = overId === tCol.id ? 0 : sCol.itemIds.indexOf(overId);
 
             if (newIndex === 0 && sCol.itemIds.length > 0) {
                 const topItemId = sCol.itemIds[0];
-                if (state.requestStates[topItemId]?.pinned && topItemId !== activeId) {
-                    return {};
-                }
+                if (state.requestStates[topItemId]?.pinned && topItemId !== activeId) return {};
             }
             sCol.itemIds.splice(oldIndex, 1);
             sCol.itemIds.splice(newIndex, 0, activeId);
-        } 
-        // Different Collection Move
-        else {
+        } else {
             const oldIndex = sCol.itemIds.indexOf(activeId);
             sCol.itemIds.splice(oldIndex, 1);
 
-            let newIndex;
-            if (overId === tCol.id) newIndex = tCol.itemIds.length;
-            else newIndex = tCol.itemIds.indexOf(overId);
+            let newIndex = overId === tCol.id ? tCol.itemIds.length : tCol.itemIds.indexOf(overId);
 
             if (newIndex < tCol.itemIds.length) {
                 const itemAtNewPos = state.requestStates[tCol.itemIds[newIndex]];

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ChevronRight, ChevronDown, FolderOpen, Folder, Plus, MoreHorizontal, GripVertical, Pin } from 'lucide-react';
+import { ChevronRight, ChevronDown, FolderOpen, Folder, Plus, FolderPlus, MoreHorizontal, GripVertical, Pin } from 'lucide-react';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableRequest } from './SortableRequest';
 import { useAppStore } from '@/store/useAppStore';
@@ -11,10 +11,19 @@ import { useModal } from '@/components/providers/ModalProvider';
 
 export function SortableCollection({ collection, activeRequestId, onToggle, onRequestClick }) {
   const store = useAppStore();
+<<<<<<< Updated upstream
   // 1. Destructure showPrompt alongside showConfirm
   const { showConfirm, showPrompt } = useModal();
+=======
+<<<<<<< Updated upstream
+=======
+  const { showConfirm, showPrompt } = useModal();
+>>>>>>> Stashed changes
 
-  // DISABLE dragging if pinned
+  const allCollections = store.getFilteredCollections();
+  const childCollections = allCollections.filter(c => c.parentId === collection.id);
+>>>>>>> Stashed changes
+
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: collection.id,
     data: { type: 'collection' },
@@ -38,7 +47,28 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
   const handleCreateRequest = (e) => {
     e.stopPropagation();
     store.createRequest(collection.id);
+    if (collection.collapsed) onToggle(collection.id);
   };
+
+  const handleCreateSubCollection = (e) => {
+    e.stopPropagation();
+    showPrompt(
+      "Enter a name for the new sub-collection:",
+      (newName) => {
+        if (newName && newName.trim() !== '') {
+          store.createCollection(newName.trim(), collection.id); 
+          if (collection.collapsed) onToggle(collection.id);
+        }
+      },
+      "New Folder",
+      "Create Sub-collection"
+    );
+  };
+
+  const sortableItemIds = [
+    ...childCollections.map(c => c.id),
+    ...(collection.items || []).map(i => i.id)
+  ];
 
   return (
     <>
@@ -48,9 +78,8 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
           onClick={() => onToggle(collection.id)}
           onContextMenu={handleContextMenu}
         >
-          {/* DRAG HANDLE - Conditional Rendering */}
           {collection.pinned ? (
-            <div className="w-4 h-4" /> // Spacer to maintain alignment
+            <div className="w-4 h-4" />
           ) : (
             <div
               {...attributes}
@@ -71,8 +100,15 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
             {collection.name}
           </span>
 
-          {/* Actions */}
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div
+              role="button"
+              onClick={handleCreateSubCollection}
+              className="p-1 hover:bg-bg-input rounded text-text-primary hover:text-brand-orange"
+              title="Add Sub-collection"
+            >
+              <FolderPlus size={14} />
+            </div>
             <div
               role="button"
               onClick={handleCreateRequest}
@@ -97,7 +133,17 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
 
         {!collection.collapsed && (
           <div className="flex flex-col gap-[2px] mt-1 pl-1 border-l border-border-subtle ml-3">
-            <SortableContext items={(collection.items || []).map(i => i.id)} strategy={verticalListSortingStrategy}>
+            <SortableContext items={sortableItemIds} strategy={verticalListSortingStrategy}>
+              {childCollections.map(childCol => (
+                <SortableCollection
+                  key={childCol.id}
+                  collection={childCol}
+                  activeRequestId={activeRequestId}
+                  onToggle={onToggle}
+                  onRequestClick={onRequestClick}
+                />
+              ))}
+
               {collection.items && collection.items.map(req => (
                 <SortableRequest
                   key={req.id}
@@ -121,6 +167,7 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
           
           // 2. Updated onRename using custom showPrompt
           onRename={() => {
+<<<<<<< Updated upstream
             setContextMenu({ x: null, y: null }); // Close menu first
             
             showPrompt(
@@ -135,10 +182,39 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
             );
           }}
 
+=======
+<<<<<<< Updated upstream
+            console.log("Rename clicked for collection:", collection.id);
+            const newName = prompt("Rename Collection:", collection.name);
+            console.log("User entered:", newName);
+            console.log("store.renameItem exists?", typeof store.renameItem);
+            if (newName) {
+              console.log("Calling renameItem...");
+              store.renameItem(collection.id, newName);
+            }
+            setContextMenu({ x: null, y: null });
+          }}
+          onDuplicate={() => { store.duplicateItem(collection.id); setContextMenu({ x: null, y: null }); }}
+          onDelete={() => { store.deleteItem(collection.id); setContextMenu({ x: null, y: null }); }}
+=======
+            setContextMenu({ x: null, y: null });
+            showPrompt(
+              "Enter a new name for this collection:",
+              (newName) => {
+                if (newName && newName.trim() !== '') {
+                  store.renameItem(collection.id, newName.trim());
+                }
+              },
+              collection.name,
+              "Rename Collection"
+            );
+          }}
+>>>>>>> Stashed changes
           onDuplicate={() => { 
             store.duplicateItem(collection.id); 
             setContextMenu({ x: null, y: null }); 
           }}
+<<<<<<< Updated upstream
           
           // 3. Updated onDelete using custom showConfirm
           onDelete={() => { 
@@ -153,6 +229,17 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
             );
           }}
           
+=======
+          onDelete={() => { 
+            setContextMenu({ x: null, y: null });
+            showConfirm(
+              `Are you sure you want to delete the collection "${collection.name}"?`,
+              () => store.deleteItem(collection.id),
+              "Delete Collection"
+            );
+          }}
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
           isPinned={collection.pinned}
           onPin={() => { 
             store.togglePinItem(collection.id); 
