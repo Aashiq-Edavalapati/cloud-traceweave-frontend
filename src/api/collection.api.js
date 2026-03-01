@@ -19,5 +19,10 @@ export const collectionApi = {
     deleteCollection: async (id) => {
         const response = await api.delete(`/collections/${id}`);
         return response.data;
+    },
+
+    duplicateCollection: async (id) => {
+        const response = await api.post(`/collections/${id}/duplicate`);
+        return response.data;
     }
 };

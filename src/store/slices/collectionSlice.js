@@ -276,4 +276,15 @@ export const createCollectionSlice = (set, get) => ({
         newRequestStates[activeId] = { ...newRequestStates[activeId], collectionId: targetCol.id };
         return { collections: newCollections, requestStates: newRequestStates };
     }),
+
+    duplicateCollection: async (id) => {
+        const { activeWorkspaceId, fetchCollections } = get();
+        try {
+            await collectionApi.duplicateCollection(id);
+            // Just refetch the tree to get the perfect deep-cloned state
+            await fetchCollections(activeWorkspaceId);
+        } catch (e) {
+            console.warn("Deep Duplication Failed:", e);
+        }
+    },
 });

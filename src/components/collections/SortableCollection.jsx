@@ -153,7 +153,11 @@ export function SortableCollection({ collection, activeRequestId, onToggle, onRe
         {!collection.collapsed && (
           <div className={`flex flex-col gap-[2px] mt-1 pl-1 border-l ml-3 ${hasActiveItem ? 'border-brand-orange/30' : 'border-border-subtle'}`}>
             {isEmpty ? (
-              <div className="text-[10px] text-text-muted italic py-1 pl-6">Empty collection</div>
+              <div className="py-2 pl-6 pr-2">
+                <div className="text-[10px] text-text-muted italic py-3 border border-dashed border-border-subtle/50 rounded flex items-center justify-center pointer-events-none">
+                  Drop requests here
+                </div>
+              </div>
             ) : (
               <SortableContext items={sortableItemIds} strategy={verticalListSortingStrategy}>
                 {childCollections.map(childCol => (
