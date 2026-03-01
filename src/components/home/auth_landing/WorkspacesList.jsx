@@ -5,20 +5,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Network, Filter, SortDesc, MoreVertical } from 'lucide-react';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0 }
-};
+const containerVariants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
+const itemVariants = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } };
 
 export const WorkspacesList = ({ workspaces }) => {
   return (
@@ -33,46 +21,48 @@ export const WorkspacesList = ({ workspaces }) => {
         </div>
       </div>
 
-      <motion.div
-        key={workspaces.length}
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="space-y-3"
-      >
-        {workspaces.map((ws) => (
-          <motion.div variants={itemVariants} key={ws.id}>
-            <Link href={`/workspace/${ws.id}`} className="block group">
-              <div className="bg-bg-panel border border-border-subtle rounded-lg p-5 hover:border-brand-orange/50 hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-base font-semibold text-text-primary group-hover:text-brand-orange transition-colors">{ws.name}</h3>
-                    <p className="text-xs text-text-secondary mt-1 flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${ws.status === 'healthy' ? 'bg-emerald-500' : ws.status === 'warning' ? 'bg-amber-500' : 'bg-red-500'}`}></span>
-                      {ws.status.charAt(0).toUpperCase() + ws.status.slice(1)} • Updated {ws.updated}
-                    </p>
-                  </div>
-                  <MoreVertical size={16} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
+      <motion.div key={workspaces.length} variants={containerVariants} initial="hidden" animate="show" className="space-y-3">
+        {workspaces.map((ws) => {
+          const formattedDate = new Date(ws.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          const isShared = ws.members?.length > 1;
 
-                <div className="grid grid-cols-3 gap-4 border-t border-border-subtle pt-4">
-                  <div>
-                    <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Requests</p>
-                    <p className="text-sm font-mono">{ws.metrics.req}</p>
+          return (
+            <motion.div variants={itemVariants} key={ws.id}>
+              <Link href={`/workspace/${ws.id}`} className="block group">
+                <div className="bg-bg-panel border border-border-subtle rounded-lg p-5 hover:border-brand-orange/50 hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-base font-semibold text-text-primary group-hover:text-brand-orange transition-colors">{ws.name}</h3>
+                      <p className="text-xs text-text-secondary mt-1 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                        Active • Updated {formattedDate}
+                      </p>
+                    </div>
+                    <MoreVertical size={16} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  <div>
-                    <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Errors</p>
-                    <p className={`text-sm font-mono ${ws.metrics.err === '0%' ? 'text-text-primary' : 'text-red-400'}`}>{ws.metrics.err}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Latency</p>
-                    <p className="text-sm font-mono">{ws.metrics.lat}</p>
+
+                  {/* REAL DATA METRICS */}
+                  <div className="grid grid-cols-3 gap-4 border-t border-border-subtle pt-4">
+                    <div>
+                      <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Members</p>
+                      <p className="text-sm font-mono">{ws.members?.length || 1}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Collections</p>
+                      <p className="text-sm font-mono">{ws._count?.collections || 0}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">Type</p>
+                      <p className={`text-sm font-mono ${isShared ? 'text-brand-blue' : 'text-text-secondary'}`}>
+                        {isShared ? 'Shared' : 'Private'}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
+              </Link>
+            </motion.div>
+          );
+        })}
       </motion.div>
     </div>
   );

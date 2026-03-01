@@ -38,6 +38,11 @@ export const workspaceApi = {
         return response.data;
     },
 
+    getGlobalStats: async () => {
+        const response = await api.get(`/workspaces/user/global-stats`);
+        return response.data;
+    },
+
     addMember: async (workspaceId, email, role) => {
         // Backend expects { email, role } in body
         const response = await api.post(`/workspaces/${workspaceId}/members`, { email, role });

@@ -24,7 +24,7 @@ const FloatingTooltip = ({ data, onSave, onManage, onMouseEnter, onMouseLeave })
 
     return createPortal(
         <div
-            className="fixed z-[9999] w-80 bg-bg-panel border border-border-strong rounded-lg shadow-2xl p-4 animate-in fade-in zoom-in-95 duration-200"
+            className="fixed z-[9998] w-80 bg-bg-panel border border-border-strong rounded-lg shadow-2xl p-4 animate-in fade-in zoom-in-95 duration-200"
             style={style}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}

@@ -6,6 +6,8 @@ export const createWorkspaceSlice = (set, get) => ({
     workspaceMembers: [],
     isLoadingWorkspaces: false,
     invitationError: null,
+    globalHistory: [],
+    globalStats: null,
 
     fetchWorkspaces: async () => {
         try {
@@ -102,6 +104,24 @@ export const createWorkspaceSlice = (set, get) => ({
             const msg = err.response?.data?.message || err.message;
             console.warn("Remove Member Error:", msg);
             return { success: false, error: msg };
+        }
+    },
+
+    fetchGlobalHistory: async () => {
+        try {
+            const response = await workspaceApi.getGlobalHistory({ page: 1, limit: 10 });
+            set({ globalHistory: response.data || [] });
+        } catch (error) {
+            console.warn("Failed to fetch global history", error);
+        }
+    },
+
+    fetchGlobalStats: async () => {
+        try {
+            const response = await workspaceApi.getGlobalStats();
+            set({ globalStats: response.data });
+        } catch (error) {
+            console.warn("Failed to fetch global stats", error);
         }
     },
 });

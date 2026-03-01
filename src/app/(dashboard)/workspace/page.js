@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link'; 
 import { AnimatePresence } from 'framer-motion';
 import {
     Search,
@@ -8,7 +9,8 @@ import {
     Filter,
     LayoutGrid,
     List as ListIcon,
-    Star
+    Star,
+    ChevronLeft
 } from 'lucide-react';
 import { FilterPopover } from '@/components/workspace/FilterPopover';
 import { WorkspaceItem } from '@/components/workspace/WorkspaceItem';
@@ -22,9 +24,7 @@ export default function WorkspacesPage() {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    // Confirmed filters (what is actually applied)
     const [activeFilters, setActiveFilters] = useState({ type: [], access: [] });
-    // Staging filters (what the user is clicking in the popover)
     const [pendingFilters, setPendingFilters] = useState({ type: [], access: [] });
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -63,13 +63,11 @@ export default function WorkspacesPage() {
 
     const filteredWorkspaces = availableWorkspaces.filter(ws => {
         const matchesSearch = ws.name.toLowerCase().includes(searchQuery.toLowerCase());
-        // Types and Access might need adjustment based on real data structure
-        // Assuming real data has similar fields or we default them
-        const type = ws.type || 'Team';
-        const access = ws.access || 'Private';
-
-        const matchesType = activeFilters.type.length === 0 || activeFilters.type.includes(type);
-        const matchesAccess = activeFilters.access.length === 0 || activeFilters.access.includes(access);
+        const memberCount = ws.members?.length || 1;
+        const derivedType = memberCount > 1 ? 'Team' : 'Personal';
+        const derivedAccess = memberCount > 1 ? 'Shared' : 'Private';
+        const matchesType = activeFilters.type.length === 0 || activeFilters.type.includes(derivedType);
+        const matchesAccess = activeFilters.access.length === 0 || activeFilters.access.includes(derivedAccess);
         const matchesStarred = !showOnlyStarred || starredIds.includes(ws.id);
 
         return matchesSearch && matchesType && matchesAccess && matchesStarred;
@@ -77,6 +75,17 @@ export default function WorkspacesPage() {
 
     return (
         <div className="min-h-screen bg-bg-base text-text-primary flex flex-col p-8 max-w-7xl mx-auto w-full">
+
+            {/* Navigation / Breadcrumb Area */}
+            <div className="mb-6">
+                <Link 
+                    href="/" 
+                    className="flex items-center gap-2 text-text-secondary hover:text-brand-orange transition-colors w-fit group"
+                >
+                    <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+                    <span className="text-sm font-medium">Back to Home</span>
+                </Link>
+            </div>
 
             {/* 1. Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -115,7 +124,6 @@ export default function WorkspacesPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {/* Favorites Toggle Button */}
                     <button
                         onClick={() => setShowOnlyStarred(!showOnlyStarred)}
                         className={`flex items-center gap-2 px-3 py-2.5 border rounded-lg text-sm font-medium transition-all ${showOnlyStarred
@@ -127,12 +135,10 @@ export default function WorkspacesPage() {
                         <span className="hidden sm:inline">Favorites</span>
                     </button>
 
-                    {/* Filter Dropdown */}
                     <div className="relative">
                         <button
                             onClick={() => {
                                 setIsFilterOpen(!isFilterOpen);
-                                // Reset pending to active when opening
                                 if (!isFilterOpen) setPendingFilters(activeFilters);
                             }}
                             className={`flex items-center gap-2 px-3 py-2.5 border rounded-lg text-sm font-medium transition-colors ${isFilterOpen || activeFilters.type.length > 0 || activeFilters.access.length > 0
@@ -158,7 +164,6 @@ export default function WorkspacesPage() {
                         </AnimatePresence>
                     </div>
 
-                    {/* View Toggle */}
                     <div className="bg-bg-input border border-border-subtle rounded-lg p-1 flex items-center">
                         <button
                             onClick={() => setViewMode('list')}

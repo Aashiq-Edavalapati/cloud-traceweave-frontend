@@ -2,10 +2,20 @@
 
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Globe, Lock, MoreVertical, Star, Users } from 'lucide-react';
+import { Clock, Globe, Lock, MoreVertical, Star, Users, Folder } from 'lucide-react';
 
 export function WorkspaceItem({ ws, viewMode, isStarred, onToggleStar, activeMenuId, setActiveMenuId }) {
     const isGrid = viewMode === 'grid';
+
+    const memberCount = ws.members?.length || 1;
+    const derivedType = memberCount > 1 ? 'Team' : 'Personal';
+    const derivedAccess = memberCount > 1 ? 'Shared' : 'Private';
+    const collectionCount = ws._count?.collections || 0;
+    
+    // Format the Prisma updatedAt timestamp
+    const lastActiveDate = new Date(ws.updatedAt).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+    });
 
     return (
         <Link href={`/workspace/${ws.id}`} className="group relative">
@@ -68,21 +78,19 @@ export function WorkspaceItem({ ws, viewMode, isStarred, onToggleStar, activeMen
                         />
                     </div>
                     <p className={`text-text-secondary text-sm ${isGrid ? 'line-clamp-2 mb-6' : 'truncate max-w-md'}`}>
-                        {ws.description}
+                        {ws.description || "No description provided."}
                     </p>
                 </div>
 
                 {/* METADATA & ACTIONS (List View Header) */}
                 {!isGrid && (
                     <div className="flex items-center gap-4 sm:gap-8 ml-4">
-                        {/* Metadata Columns - Hidden on mobile list view */}
                         <div className="hidden lg:flex items-center gap-8 text-xs text-text-secondary">
-                            <div className="w-24 flex items-center gap-1.5"><Users size={14} className="text-text-muted" /> <span>{ws.type}</span></div>
-                            <div className="w-24 flex items-center gap-1.5">{ws.access === 'Private' ? <Lock size={14} className="text-text-muted" /> : <Globe size={14} className="text-text-muted" />} <span>{ws.access}</span></div>
-                            <div className="w-32 flex items-center gap-1.5 font-mono text-text-muted"><Clock size={14} className="text-text-muted" /> <span>{ws.lastActive}</span></div>
+                            <div className="w-24 flex items-center gap-1.5"><Users size={14} className="text-text-muted" /> <span>{derivedType}</span></div>
+                            <div className="w-24 flex items-center gap-1.5">{derivedAccess === 'Private' ? <Lock size={14} className="text-text-muted" /> : <Globe size={14} className="text-text-muted" />} <span>{derivedAccess}</span></div>
+                            <div className="w-32 flex items-center gap-1.5 font-mono text-text-muted"><Clock size={14} className="text-text-muted" /> <span>{lastActiveDate}</span></div>
                         </div>
 
-                        {/* Action Menu for List View */}
                         <div className="relative">
                             <button
                                 onClick={(e) => setActiveMenuId(e, ws.id)}
@@ -110,14 +118,14 @@ export function WorkspaceItem({ ws, viewMode, isStarred, onToggleStar, activeMen
                 {/* METRICS FOOTER (Grid View Only) */}
                 {isGrid && (
                     <div className="mt-auto pt-4 border-t border-border-subtle flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-2 text-text-muted">
+                        <div className="flex items-center gap-2 text-text-muted" title={`${memberCount} Member(s)`}>
                             <Users size={14} /> 
-                            {Array.isArray(ws.members) ? ws.members.length : 0}
+                            {memberCount}
                         </div>
                         
-                        <div className="flex items-center gap-2 font-mono text-text-muted">
-                            <span className={`h-2 w-2 rounded-full ${ws.status === 'active' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : ws.status === 'warning' ? 'bg-amber-500' : 'bg-gray-500'}`} />
-                            {ws.traceCount}
+                        <div className="flex items-center gap-2 font-mono text-text-muted" title={`${collectionCount} Collection(s)`}>
+                            <Folder size={14} className="text-brand-orange/70" />
+                            {collectionCount}
                         </div>
                     </div>
                 )}
