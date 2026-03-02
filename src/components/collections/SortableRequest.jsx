@@ -47,11 +47,11 @@ export function SortableRequest({ id, protocol, method, name, active, pinned, on
   };
 
   const methodColors = {
-    GET: 'text-emerald-500', // Aligned with your HTTP colors
-    POST: 'text-brand-primary',
-    PUT: 'text-blue-400',
-    DELETE: 'text-red-500',
-    PATCH: 'text-yellow-400'
+    GET: 'text-method-get',
+    POST: 'text-method-post',
+    PUT: 'text-method-put',
+    DELETE: 'text-method-delete',
+    PATCH: 'text-method-patch'
   };
 
   const handleContextMenu = (e) => {

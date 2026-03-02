@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { useAuthStore } from '@/store/useAuthStore';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { useModal } from '@/components/providers/ModalProvider';
 import { Users, Mail, ShieldAlert, ShieldCheck, User as UserIcon, Building, Trash2, Clock, CheckCircle2, Copy, RefreshCw } from 'lucide-react';
 
@@ -142,8 +144,20 @@ export default function TeamPage() {
           <>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight">{activeWorkspace.name} Team</h1>
-                <p className="text-text-secondary text-sm mt-1">Manage access and roles for this workspace.</p>
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary mb-3 transition-colors"
+                >
+                  <ArrowLeft size={16} />
+                  Back to Home
+                </Link>
+
+                <h1 className="text-3xl font-bold tracking-tight">
+                  {activeWorkspace.name} Team
+                </h1>
+                <p className="text-text-secondary text-sm mt-1">
+                  Manage access and roles for this workspace.
+                </p>
               </div>
               
               <div className="flex items-center gap-3">

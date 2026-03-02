@@ -46,7 +46,7 @@ const PromptModalUI = ({ config, onClose }) => {
                     </button>
                     <button 
                         onClick={handleSubmit}
-                        className="bg-[var(--brand-primary)] text-white px-4 py-1.5 rounded text-xs hover:bg-[#e65b2b] transition-colors"
+                        className="bg-[var(--brand-primary)] text-black px-4 py-1.5 rounded text-xs hover:bg-[#bc80f1] transition-colors"
                     >
                         Submit
                     </button>
@@ -100,7 +100,7 @@ export function ModalProvider({ children }) {
                                 <div className="flex justify-end">
                                     <button 
                                         onClick={closeAlert}
-                                        className="bg-[var(--brand-primary)] text-white px-4 py-1.5 rounded text-xs hover:bg-[#e65b2b] transition-colors"
+                                        className="bg-[var(--brand-primary)] text-black px-4 py-1.5 rounded text-xs hover:bg-[#bc80f1] transition-colors"
                                     >
                                         OK
                                     </button>
@@ -124,7 +124,7 @@ export function ModalProvider({ children }) {
                                     </button>
                                     <button 
                                         onClick={handleConfirmClick}
-                                        className="bg-[var(--brand-primary)] text-white px-4 py-1.5 rounded text-xs hover:bg-[#e65b2b] transition-colors"
+                                        className="bg-[var(--brand-primary)] text-black px-4 py-1.5 rounded text-xs hover:bg-[#bc80f1] transition-colors"
                                     >
                                         Confirm
                                     </button>

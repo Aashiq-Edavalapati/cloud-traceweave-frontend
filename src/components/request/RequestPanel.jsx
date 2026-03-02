@@ -96,13 +96,23 @@ export default function RequestPanel() {
     const env = store.getEnvironmentById(tabId);
     const monitor = store.monitorStates[tabId];
 
+    const methodColors = {
+      GET: 'text-method-get',
+      POST: 'text-method-post',
+      PUT: 'text-method-put',
+      DELETE: 'text-method-delete',
+      PATCH: 'text-method-patch'
+    };
+
     let name = 'Unknown';
     let icon = <Globe size={10} />;
 
     if (req) {
       name = req.name;
       icon = (
-        <span className={`font-bold text-[10px] ${req.config.method === 'GET' ? 'text-method-get' : 'text-brand-primary'}`}>
+        <span className={`font-bold text-[10px] ${
+          methodColors[req.config.method] || 'text-brand-primary'
+        }`}>
           {req.config.method}
         </span>
       );
@@ -123,7 +133,7 @@ export default function RequestPanel() {
     };
   };
 
-  // --- 2. ✨ THE FIX: Mathematical calculation for visible tabs ---
+  // --- Mathematical calculation for visible tabs ---
   const TAB_WIDTH = 176; // w-44 = 176px. Exact width locking ensures perfect math.
   const BUTTONS_WIDTH = 100; // Plus button + Dropdown trigger space
   const maxVisible = Math.max(1, Math.floor((containerWidth - BUTTONS_WIDTH) / TAB_WIDTH));
