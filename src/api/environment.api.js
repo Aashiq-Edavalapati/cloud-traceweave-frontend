@@ -40,5 +40,10 @@ export const environmentApi = {
     deleteVariable: async (envId, varId) => {
         const response = await api.delete(`/environments/${envId}/variables/${varId}`);
         return response.data;
+    },
+
+    getGlobalEnvironments: async () => {
+        const response = await api.get('/workspaces/user/global-environments');
+        return response.data;
     }
 };
