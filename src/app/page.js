@@ -18,7 +18,7 @@ export default function RootPage() {
     return (
       <div className="flex items-center justify-center h-screen bg-bg-base text-text-secondary">
         <div className="flex flex-col items-center gap-4">
-          <PacmanLoader color="#FF6F00" size={24} />
+          <PacmanLoader color="#EAC2FF" size={24} />
         </div>
       </div>
     );

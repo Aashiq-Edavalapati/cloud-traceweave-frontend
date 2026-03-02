@@ -12,45 +12,79 @@ import TooltipContainer from './response_panel/TooltipContainer';
 
 // --- SUB-COMPONENTS (Defined outside to prevent re-initialization on every render) ---
 
-const HTTP_STATUS_CODES = {
-  200: 'OK', 201: 'Created', 202: 'Accepted', 204: 'No Content',
-  301: 'Moved Permanently', 302: 'Found', 304: 'Not Modified',
-  400: 'Bad Request', 401: 'Unauthorized', 403: 'Forbidden', 404: 'Not Found', 405: 'Method Not Allowed', 409: 'Conflict', 429: 'Conflict',
-  500: 'Internal Server Error', 502: 'Bad Gateway', 503: 'Service Unavailable', 504: 'Gateway Timeout'
+const HTTP_STATUS_INFO = {
+  100: { text: 'Continue', desc: 'The server received request headers; client should proceed to send the body.' },
+  101: { text: 'Switching Protocols', desc: 'The server agrees to switch protocols as requested by the client.' },
+  200: { text: 'OK', desc: 'The request succeeded.' },
+  201: { text: 'Created', desc: 'The request succeeded, and a new resource was created.' },
+  202: { text: 'Accepted', desc: 'The request has been received but not yet acted upon.' },
+  204: { text: 'No Content', desc: 'The server successfully processed the request and is not returning any content.' },
+  301: { text: 'Moved Permanently', desc: 'The URL of the requested resource has been changed permanently.' },
+  302: { text: 'Found', desc: 'The URI of the requested resource has been changed temporarily.' },
+  304: { text: 'Not Modified', desc: 'The resource has not been modified since the last request.' },
+  400: { text: 'Bad Request', desc: 'The server could not understand the request due to invalid syntax.' },
+  401: { text: 'Unauthorized', desc: 'Authentication is required to access the requested resource.' },
+  403: { text: 'Forbidden', desc: 'The client does not have access rights to the content.' },
+  404: { text: 'Not Found', desc: 'The server cannot find the requested resource.' },
+  405: { text: 'Method Not Allowed', desc: 'The request method is known by the server but not supported by the resource.' },
+  409: { text: 'Conflict', desc: 'The request conflicts with the current state of the server.' },
+  422: { text: 'Unprocessable Entity', desc: 'The request was well-formed but unable to be followed due to semantic errors.' },
+  429: { text: 'Too Many Requests', desc: 'The client has sent too many requests in a given amount of time.' },
+  500: { text: 'Internal Server Error', desc: 'The server encountered an unexpected condition that prevented it from fulfilling the request.' },
+  502: { text: 'Bad Gateway', desc: 'The server received an invalid response from the upstream server.' },
+  503: { text: 'Service Unavailable', desc: 'The server is currently unable to handle the request due to temporary overloading or maintenance.' },
+  504: { text: 'Gateway Timeout', desc: 'The server did not get a timely response from the upstream server.' },
+  0: { text: 'Network Error', desc: 'Could not connect to the server. Check your network connection, DNS, or CORS policy.' }
 };
 
 const StatusBadge = ({ response }) => {
   if (!response) return null;
-  
-  let status, statusText;
+
+  let status = 0;
+  let statusText = 'Unknown';
+  let description = 'Unknown status code.';
 
   if (response.isWorkflow) {
     status = response.status === 'COMPLETED' ? 200 : 500;
     statusText = response.status; // e.g., "COMPLETED" or "FAILED"
+    description = response.status === 'COMPLETED' 
+      ? 'All workflow steps executed successfully.' 
+      : 'One or more workflow steps failed during execution.';
   } else {
     status = response.status || 0;
-    // Fallback to our dictionary if statusText is missing
-    statusText = response.statusText || HTTP_STATUS_CODES[status] || 'Unknown';
+    const info = HTTP_STATUS_INFO[status];
+    // Fallback to our dictionary or default values
+    statusText = response.statusText || info?.text || 'Unknown';
+    description = info?.desc || 'No detailed description available for this status code.';
   }
 
   const displayText = `${status} ${statusText}`.trim();
 
+  // Color and Icon mapping logic
   let color = 'text-green-500';
   let bgColor = 'bg-green-500/10';
+  let borderColor = 'hover:border-green-500/20';
   let Icon = CheckCircle;
 
-  // Enhance color logic for 3XX, 4XX, 5XX
-  if (status >= 300 && status < 400) {
+  if (status >= 100 && status < 300) {
+    color = 'text-green-500';
+    bgColor = 'bg-green-500/10';
+    borderColor = 'hover:border-green-500/20';
+    Icon = CheckCircle;
+  } else if (status >= 300 && status < 400) {
     color = 'text-blue-500';
     bgColor = 'bg-blue-500/10';
+    borderColor = 'hover:border-blue-500/20';
     Icon = Info;
   } else if (status >= 400 && status < 500) {
     color = 'text-yellow-500';
     bgColor = 'bg-yellow-500/10';
+    borderColor = 'hover:border-yellow-500/20';
     Icon = AlertTriangle;
   } else if (status >= 500 || status === 0) { // Catch 0 (Network Error)
     color = 'text-red-500';
     bgColor = 'bg-red-500/10';
+    borderColor = 'hover:border-red-500/20';
     Icon = XCircle;
   }
 
@@ -58,13 +92,31 @@ const StatusBadge = ({ response }) => {
     <div className="relative group">
       <motion.div
         whileHover={{ scale: 1.02 }}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-all ${bgColor} border border-transparent ${color === 'text-green-500' ? 'hover:border-green-500/20' : color === 'text-yellow-500' ? 'hover:border-yellow-500/20' : color === 'text-blue-500' ? 'hover:border-blue-500/20' : 'hover:border-red-500/20'}`}
+        className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-help transition-all ${bgColor} border border-transparent ${borderColor}`}
       >
         <Icon size={14} className={color} />
-        <span className={`font-semibold ${color} text-xs uppercase tracking-wider truncate max-w-[150px]`} title={displayText}>
-            {displayText}
+        <span className={`font-semibold ${color} text-xs uppercase tracking-wider truncate max-w-[150px]`}>
+          {displayText}
         </span>
       </motion.div>
+
+      {/* Tooltip implementation using existing wrapper */}
+      <div className="hidden group-hover:block">
+        <TooltipContainer width="w-72">
+          <div className={`flex items-center gap-2 mb-3 pb-2 border-b border-[#1F1F1F] ${color}`}>
+            <Icon size={16} />
+            <span className="font-bold text-sm tracking-wide">{displayText}</span>
+          </div>
+          <div className="text-xs text-[#A1A1AA] leading-relaxed">
+            {description}
+          </div>
+          {status === 0 && (
+            <div className="mt-3 p-2 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] uppercase tracking-wider text-center">
+              Check Console for CORS issues
+            </div>
+          )}
+        </TooltipContainer>
+      </div>
     </div>
   );
 };

@@ -32,11 +32,11 @@ export const ResizableSidebar = ({ children }) => {
 
   return (
     <>
-      <aside style={{ width: `${sidebarWidth}px` }} className="relative flex flex-col border-r border-border-subtle bg-bg-sidebar z-30 h-full">
+      <aside style={{ width: `${sidebarWidth}px` }} className="relative flex flex-col border-r border-border-subtle bg-bg-sidebar z-[9997] h-full">
         {children}
         <div 
           onMouseDown={startResizing}
-          className="absolute top-0 right-0 bottom-0 w-1 cursor-col-resize hover:bg-brand-primary transition-colors z-40 opacity-0 hover:opacity-100"
+          className="absolute top-0 right-0 bottom-0 w-1 cursor-col-resize hover:bg-brand-primary transition-colors z-[9998] opacity-0 hover:opacity-100"
         />
       </aside>
     </>

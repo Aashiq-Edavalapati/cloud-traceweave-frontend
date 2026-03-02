@@ -39,7 +39,7 @@ export default function ExecutionDetailPage() {
   if (isHistoryLoading || !log) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center h-full min-h-screen text-text-secondary">
-        <PacmanLoader color="#FF6F00" size={20} />
+        <PacmanLoader color="#EAC2FF" size={20} />
         <p className="mt-4 text-sm font-mono animate-pulse">Loading execution details...</p>
       </div>
     );

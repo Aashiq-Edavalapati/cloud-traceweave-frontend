@@ -107,18 +107,20 @@ export const createRequestSlice = (set, get) => ({
         }
     },
 
-    createDetachedRequest: (protocol = null) => {
+    createDetachedRequest: (protocol = null, customConfig = null) => {
         set(state => {
             const newId = createId();
             const protoToUse = protocol || state.lastProtocol;
-            const initialConfig = getDefaultConfig(protoToUse);
+            
+            // USE CUSTOM CONFIG IF PROVIDED, ELSE DEFAULT
+            const initialConfig = customConfig || getDefaultConfig(protoToUse);
 
             const newReq = {
                 id: newId,
                 collectionId: null,
-                name: 'Untitled Request',
+                name: customConfig ? 'Imported cURL' : 'Untitled Request', // ✨ AUTO NAME
                 protocol: protoToUse,
-                config: initialConfig, // Store protocol-specific shape inside config
+                config: initialConfig, 
                 cookies: [],
                 scripts: { pre: '', post: '' },
                 pinned: false,

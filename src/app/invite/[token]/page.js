@@ -44,7 +44,7 @@ export default function InviteAcceptPage() {
   if (isChecking) {
     return (
       <div className="min-h-screen bg-bg-base flex flex-col items-center justify-center">
-        <PacmanLoader color="#FF6F00" size={20} />
+        <PacmanLoader color="#EAC2FF" size={20} />
       </div>
     );
   }
@@ -100,7 +100,7 @@ export default function InviteAcceptPage() {
 
         {status === 'loading' && (
           <div className="flex flex-col items-center py-8">
-            <PacmanLoader color="#FF6F00" size={20} />
+            <PacmanLoader color="#EAC2FF" size={20} />
             <p className="text-sm font-mono mt-8 text-text-secondary animate-pulse">Verifying token...</p>
           </div>
         )}

@@ -1,12 +1,19 @@
 import { useState } from 'react';
-import { Save, Loader2, CookieIcon } from 'lucide-react';
+import { Save, Loader2, CookieIcon, Code2 } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { UrlBar } from '@/components/request/UrlBar';
 import { Tabs } from '@/components/ui/Tabs';
 import HttpMethodDropdown from './HttpMethodDropdown';
 import ProtocolSwitcher from '@/components/request/ProtocolSwitcher';
 
-export default function HttpHeader({ activeId, configTab, setConfigTab, onOpenSaveModal, onOpenCookieModal }) {
+export default function HttpHeader({ 
+  activeId, 
+  configTab, 
+  setConfigTab, 
+  onOpenSaveModal, 
+  onOpenCookieModal, 
+  onOpenCodeModal 
+}) {
   const store = useAppStore();
   const activeReqState = store.requestStates[activeId] || { config: { url: '', method: 'GET' } };
 
@@ -25,6 +32,7 @@ export default function HttpHeader({ activeId, configTab, setConfigTab, onOpenSa
 
   const handleRenameStart = () => { setTempName(activeItemName); setIsRenaming(true); };
   const handleRenameSave = () => { store.renameItem(activeId, tempName); setIsRenaming(false); };
+  
   const handleSaveClick = () => {
     if (isNew) onOpenSaveModal();
     else store.saveRequest(activeId);
@@ -63,6 +71,15 @@ export default function HttpHeader({ activeId, configTab, setConfigTab, onOpenSa
         </div>
 
         <div className="flex gap-2 shrink-0">
+          {/* --- GENERATE CODE BUTTON --- */}
+          <button
+            onClick={onOpenCodeModal}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border-subtle text-text-secondary hover:bg-bg-input hover:text-text-primary transition"
+            title="Generate Code Snippet"
+          >
+            <Code2 size={14} /> Code
+          </button>
+
           <button
             onClick={onOpenCookieModal}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border-subtle text-text-secondary hover:bg-bg-input hover:text-text-primary transition"
@@ -70,9 +87,14 @@ export default function HttpHeader({ activeId, configTab, setConfigTab, onOpenSa
           >
             <CookieIcon size={14} /> Cookies
           </button>
+
           <button
             onClick={handleSaveClick}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border transition ${isDirty ? 'bg-bg-input border-brand-primary text-text-primary' : 'bg-bg-input border-border-subtle text-text-secondary'}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border transition ${
+              isDirty 
+                ? 'bg-bg-input border-brand-primary text-text-primary' 
+                : 'bg-bg-input border-border-subtle text-text-secondary'
+            }`}
           >
             <Save size={14} /> {isDirty ? 'Save*' : 'Saved'}
           </button>
@@ -81,7 +103,10 @@ export default function HttpHeader({ activeId, configTab, setConfigTab, onOpenSa
 
       <div className="flex h-10 mb-4 rounded border border-border-subtle bg-bg-input focus-within:border-border-strong transition-colors z-50 relative">
         <HttpMethodDropdown activeId={activeId} />
-        <UrlBar value={activeReqState.config?.url || ''} onChange={(val) => store.updateActiveRequest('url', val)} />
+        <UrlBar 
+          value={activeReqState.config?.url || ''} 
+          onChange={(val) => store.updateActiveRequest('url', val)} 
+        />
         <button
           onClick={store.executeRequest}
           disabled={store.isLoading}

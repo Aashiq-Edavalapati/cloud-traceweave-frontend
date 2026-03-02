@@ -21,14 +21,14 @@ export default function WorkspaceEditor() {
     const { workspaceId, tab } = useParams();
     const { activeView, setActiveWorkspace, setActiveSidebarItem } = useAppStore();
 
-    // ✅ Set active workspace from URL
+    // Set active workspace from URL
     useEffect(() => {
         if (workspaceId) {
             setActiveWorkspace(workspaceId);
         }
     }, [workspaceId, setActiveWorkspace]);
 
-    // ✅ Sync URL → Zustand state (ONLY ONE DIRECTION)
+    // Sync URL → Zustand state (ONLY ONE DIRECTION)
     useEffect(() => {
         if (tab && tab[0]) {
             const urlItem = tab[0].toLowerCase();
