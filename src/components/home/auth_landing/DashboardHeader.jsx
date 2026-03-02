@@ -36,7 +36,7 @@ export const DashboardHeader = ({ user, logout }) => {
       <div className="flex items-center gap-4">
         <button className="text-text-muted hover:text-text-primary transition-colors relative">
           <Bell size={18} />
-          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-brand-orange rounded-full border-2 border-bg-base"></span>
+          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-brand-primary rounded-full border-2 border-bg-base"></span>
         </button>
         
         {/* User Profile Dropdown */}

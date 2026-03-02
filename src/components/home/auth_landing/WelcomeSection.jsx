@@ -23,7 +23,7 @@ export const WelcomeSection = ({ user }) => {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-brand-orange text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-orange-600 transition-colors shadow-[0_0_15px_rgba(255,108,55,0.2)]"
+          className="flex items-center gap-2 bg-brand-primary text-brand-surface px-4 py-2 rounded-md text-sm font-black hover:bg-brand-glow transition-colors shadow-glow-sm"
         >
           <Plus size={16} /> New Workspace
         </button>
@@ -36,3 +36,4 @@ export const WelcomeSection = ({ user }) => {
     </>
   );
 };
+

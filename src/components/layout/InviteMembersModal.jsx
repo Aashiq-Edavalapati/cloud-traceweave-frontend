@@ -27,7 +27,7 @@ export default function InviteMembersModal({ isOpen, onClose }) {
         {/* Header */}
         <div className="px-6 py-4 border-b border-border-subtle flex justify-between items-center bg-bg-base">
           <h2 className="text-sm font-bold text-text-primary flex items-center gap-2">
-            <UserPlus size={16} className="text-brand-orange" />
+            <UserPlus size={16} className="text-brand-primary" />
             Manage Access
           </h2>
           <button onClick={onClose} className="text-text-secondary hover:text-text-primary"><X size={18} /></button>
@@ -43,7 +43,7 @@ export default function InviteMembersModal({ isOpen, onClose }) {
                 placeholder="teammate@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-bg-input border border-border-subtle rounded py-2 pl-9 pr-3 text-sm text-text-primary focus:border-brand-orange outline-none placeholder:text-text-muted"
+                className="w-full bg-bg-input border border-border-subtle rounded py-2 pl-9 pr-3 text-sm text-text-primary focus:border-brand-primary outline-none placeholder:text-text-muted"
                 required
               />
             </div>
@@ -56,7 +56,7 @@ export default function InviteMembersModal({ isOpen, onClose }) {
               <option value="EDITOR">Editor</option>
               <option value="OWNER">Owner</option>
             </select>
-            <button className="bg-brand-orange text-white text-xs font-bold px-4 rounded hover:bg-orange-600 transition shadow-lg shadow-brand-orange/20">
+            <button className="bg-brand-primary text-brand-surface text-xs font-black px-4 py-2 rounded hover:bg-brand-glow transition shadow-glow-sm">
               Invite
             </button>
           </form>

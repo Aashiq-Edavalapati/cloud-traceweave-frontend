@@ -13,7 +13,7 @@ const PROTOCOL_CONFIG = {
   http: { icon: ArrowRightLeft, color: 'text-emerald-500' },
   graphql: { icon: Box, color: 'text-pink-500' },
   grpc: { icon: Zap, color: 'text-blue-400' },
-  websocket: { icon: Activity, color: 'text-orange-400' },
+  websocket: { icon: Activity, color: 'text-brand-primary' },
 };
 
 export function SortableRequest({ id, protocol, method, name, active, pinned, onClick }) {
@@ -29,7 +29,8 @@ export function SortableRequest({ id, protocol, method, name, active, pinned, on
     setNodeRef,
     transform,
     transition,
-    isDragging
+    isDragging,
+    isOver
   } = useSortable({ 
     id, 
     data: { type: 'request' },
@@ -46,11 +47,11 @@ export function SortableRequest({ id, protocol, method, name, active, pinned, on
   };
 
   const methodColors = {
-    GET: 'text-emerald-500', // Aligned with your HTTP colors
-    POST: 'text-brand-orange',
-    PUT: 'text-blue-400',
-    DELETE: 'text-red-500',
-    PATCH: 'text-yellow-400'
+    GET: 'text-method-get',
+    POST: 'text-method-post',
+    PUT: 'text-method-put',
+    DELETE: 'text-method-delete',
+    PATCH: 'text-method-patch'
   };
 
   const handleContextMenu = (e) => {
@@ -94,12 +95,18 @@ export function SortableRequest({ id, protocol, method, name, active, pinned, on
         style={style}
         className={cn(
           "group flex items-center gap-2 px-2 py-1.5 ml-3 mr-2 rounded-md cursor-pointer border border-transparent transition-all select-none relative",
-          active ? "bg-bg-input border-border-subtle text-text-primary" : "text-text-secondary hover:bg-bg-panel hover:text-text-primary"
+          active ? "bg-bg-input border-border-subtle text-text-primary" : "text-text-secondary hover:bg-bg-panel hover:text-text-primary",
+          isOver && !isDragging ? "ring-1 ring-brand-primary/50" : "" 
         )}
         onClick={handleSingleClick}
         onDoubleClick={handleDoubleClick}
         onContextMenu={handleContextMenu}
       >
+        {/* Drag indicator line */}
+        {isOver && !isDragging && (
+           <div className="absolute -bottom-[2px] left-0 right-0 h-[2px] bg-brand-primary z-50 rounded-full shadow-[0_0_8px_rgba(255,100,0,0.8)]" />
+        )}
+
         {/* DRAG HANDLE - Conditional Rendering */}
         {pinned ? (
           <div className="w-3 h-3" /> // Spacer
@@ -121,7 +128,7 @@ export function SortableRequest({ id, protocol, method, name, active, pinned, on
         
         <span className="text-xs truncate flex-1 flex items-center gap-2">
             {name}
-            {pinned && <Pin size={10} className="text-brand-orange fill-brand-orange rotate-45" />}
+            {pinned && <Pin size={10} className="text-brand-primary fill-brand-primary rotate-45" />}
         </span>
 
         <div 

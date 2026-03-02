@@ -295,19 +295,27 @@ export const createExecutionSlice = (set, get) => ({
     fetchHistory: async (scope = 'workspace', page = 1, limit = 20) => {
         const { activeWorkspaceId } = get();
         try {
+            let response;
+            
             if (scope === 'workspace' && activeWorkspaceId) {
-                const response = await workspaceApi.getWorkspaceHistory(activeWorkspaceId, { page, limit });
+                response = await workspaceApi.getWorkspaceHistory(activeWorkspaceId, { page, limit });
+            } else if (scope === 'all') {
+                response = await workspaceApi.getGlobalHistory({ page, limit }); 
+            }
+
+            if (response) {
                 const historyItems = response.data || [];
                 const pagination = response.pagination || {};
                 
                 set((state) => ({ 
+                    // Replace on page 1, append on subsequent pages
                     history: page === 1 ? historyItems : [...state.history, ...historyItems] 
                 }));
 
-                return pagination;
+                return pagination; // Return this so the UI knows if it should show "Load More"
             }
         } catch (error) { 
-            console.warn('Failed to fetch history:', error); 
+            console.warn(`Failed to fetch ${scope} history:`, error); 
             return null;
         }
     },

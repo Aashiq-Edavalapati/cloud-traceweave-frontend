@@ -78,7 +78,7 @@ export default function GraphqlRequestPanel({ activeId }) {
       {/* Resizer Handle */}
       <div 
         onMouseDown={startResize} 
-        className="h-1 bg-border-subtle hover:bg-brand-orange cursor-row-resize shrink-0 relative z-20" 
+        className="h-1 bg-border-subtle hover:bg-brand-primary cursor-row-resize shrink-0 relative z-20" 
       />
       
       {/* Response Pane */}

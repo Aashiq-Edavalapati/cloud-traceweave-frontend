@@ -9,7 +9,7 @@ export default function SaveRequestModal({ isOpen, onClose, requestId }) {
     const [selectedCollectionId, setSelectedCollectionId] = useState(null);
     const [newCollectionName, setNewCollectionName] = useState('');
     const [isCreatingCol, setIsCreatingCol] = useState(false);
-    
+
     // Portal mounting state
     const [mounted, setMounted] = useState(false);
 
@@ -60,7 +60,7 @@ export default function SaveRequestModal({ isOpen, onClose, requestId }) {
                             type="text"
                             value={requestName}
                             onChange={(e) => setRequestName(e.target.value)}
-                            className="w-full bg-bg-input border border-border-subtle rounded p-2 text-sm text-text-primary focus:border-brand-orange outline-none"
+                            className="w-full bg-bg-input border border-border-subtle rounded p-2 text-sm text-text-primary focus:border-brand-primary outline-none"
                         />
                     </div>
 
@@ -83,7 +83,7 @@ export default function SaveRequestModal({ isOpen, onClose, requestId }) {
                                 placeholder="Collection Name"
                                 value={newCollectionName}
                                 onChange={(e) => setNewCollectionName(e.target.value)}
-                                className="flex-1 bg-bg-base border border-brand-orange rounded px-2 text-xs focus:outline-none"
+                                className="flex-1 bg-bg-base border border-brand-primary rounded px-2 text-xs focus:outline-none"
                                 autoFocus
                             />
                             <button
@@ -107,9 +107,9 @@ export default function SaveRequestModal({ isOpen, onClose, requestId }) {
                                 <div
                                     key={col.id}
                                     onClick={() => setSelectedCollectionId(col.id)}
-                                    className={`px-3 py-2 flex items-center gap-2 cursor-pointer text-xs border-b border-border-subtle last:border-0 hover:bg-bg-input ${selectedCollectionId === col.id ? 'bg-brand-orange/20 text-brand-orange font-semibold' : 'text-text-primary'}`}
+                                    className={`px-3 py-2 flex items-center gap-2 cursor-pointer text-xs border-b border-border-subtle last:border-0 hover:bg-bg-input ${selectedCollectionId === col.id ? 'bg-brand-primary/20 text-brand-primary font-semibold' : 'text-text-primary'}`}
                                 >
-                                    <Folder size={14} className={selectedCollectionId === col.id ? 'fill-brand-orange' : ''} />
+                                    <Folder size={14} className={selectedCollectionId === col.id ? 'fill-brand-primary' : ''} />
                                     {col.name}
                                 </div>
                             ))
@@ -123,7 +123,7 @@ export default function SaveRequestModal({ isOpen, onClose, requestId }) {
                     <button
                         onClick={handleSave}
                         disabled={!selectedCollectionId}
-                        className="bg-brand-orange text-white px-4 py-1.5 rounded text-xs font-bold hover:bg-orange-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-brand-primary text-brand-surface px-4 py-1.5 rounded text-xs font-black hover:bg-brand-glow transition disabled:opacity-50 disabled:cursor-not-allowed shadow-glow-sm"
                     >
                         Save
                     </button>

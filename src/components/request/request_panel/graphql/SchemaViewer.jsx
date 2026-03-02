@@ -4,7 +4,7 @@ import { Loader2, Box, Download, BookOpen } from 'lucide-react';
 export default function SchemaViewer({ schema, isLoading, onFetch }) {
     if (isLoading) {
         return (
-            <div className="p-8 flex justify-center text-brand-orange">
+            <div className="p-8 flex justify-center text-brand-primary">
                 <Loader2 className="animate-spin" />
             </div>
         );

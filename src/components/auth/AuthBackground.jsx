@@ -1,67 +1,54 @@
 'use client';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 export default function AuthBackground() {
   return (
     <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-bg-base">
-      
-      {/* 1. Spotlight Effect (Subtle glow in the center to highlight the form) */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(40,40,40,1)_0%,_rgba(21,21,21,1)_80%)]" />
 
-      {/* 2. The Grid Pattern (CRISPER NOW) 
-          - Changed opacity from 0.03 to 0.07 
-          - Changed color to #E5E5E5 (Lighter gray)
-      */}
-      <div 
-        className="absolute inset-0 opacity-[0.07]" 
-        style={{ 
-          backgroundImage: 'linear-gradient(#E5E5E5 1px, transparent 1px), linear-gradient(90deg, #E5E5E5 1px, transparent 1px)', 
-          backgroundSize: '40px 40px' 
-        }} 
+      {/* 1. Immersive Spotlight Effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(26,16,37,1)_0%,_rgba(8,8,10,1)_100%)]" />
+
+      {/* 2. Sophisticated Grid Pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(234,194,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(234,194,255,0.4) 1px, transparent 1px)',
+          backgroundSize: '32px 32px'
+        }}
       />
 
-      {/* 3. Abstract "Trace" Lines (MORE VIBRANT) */}
+      {/* 3. Branded Trace Lines */}
       <svg className="absolute inset-0 w-full h-full" aria-hidden="true">
         <defs>
           <linearGradient id="trace-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="transparent" />
-            <stop offset="50%" stopColor="var(--brand-orange)" />
-            <stop offset="100%" stopColor="transparent" />
-          </linearGradient>
-          
-          <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="transparent" />
-            <stop offset="50%" stopColor="var(--brand-blue)" />
+            <stop offset="50%" stopColor="var(--brand-primary)" />
             <stop offset="100%" stopColor="transparent" />
           </linearGradient>
         </defs>
-        
-        {/* Large sweeping trace (Orange) - Increased opacity to 0.4 */}
-        <path 
-            d="M-100,500 Q400,300 800,800 T1800,600" 
-            fill="none" 
-            stroke="url(#trace-gradient)" 
-            strokeWidth="2" 
-            className="opacity-40 animate-pulse" 
-            style={{ animationDuration: '6s' }} 
-        />
-        
-        {/* Secondary Trace (Blue dashed) - Increased opacity to 0.2 */}
-        <path 
-            d="M200,0 Q500,600 200,900" 
-            fill="none" 
-            stroke="url(#blue-gradient)" 
-            strokeWidth="1.5" 
-            strokeDasharray="8 8" 
-            className="opacity-20" 
+
+        {/* Animated Background Traces */}
+        <motion.path
+          d="M-200,400 Q400,200 800,700 T1800,500"
+          fill="none"
+          stroke="url(#trace-gradient)"
+          strokeWidth="1.5"
+          className="opacity-20"
+          animate={{
+            d: [
+              "M-200,400 Q400,200 800,700 T1800,500",
+              "M-200,500 Q400,300 800,600 T1800,400",
+              "M-200,400 Q400,200 800,700 T1800,500"
+            ]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
       </svg>
-      
-      {/* 4. Floating Nodes (Active endpoints) */}
-      {/* Top Left Node */}
-      <div className="absolute top-[20%] left-[15%] w-1.5 h-1.5 bg-brand-orange rounded-full shadow-[0_0_10px_var(--brand-orange)] animate-ping" style={{ animationDuration: '4s' }} />
-      
-      {/* Bottom Right Node */}
-      <div className="absolute bottom-[20%] right-[15%] w-2 h-2 bg-brand-blue rounded-full shadow-[0_0_15px_var(--brand-blue)] animate-bounce" style={{ animationDuration: '8s' }} />
+
+      {/* 4. Glass Glare / Glows */}
+      <div className="absolute top-[30%] left-[10%] w-[400px] h-[400px] bg-brand-glow/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[10%] w-[300px] h-[300px] bg-brand-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
     </div>
   );

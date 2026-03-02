@@ -67,7 +67,7 @@ const Dropdown = ({ icon: Icon, value, options, onSelect, label, onOpen }) => {
                     {optionLabel}
                 </span>
                 
-                {isSelected && <Check size={14} className={optionClass ? "text-current" : "text-brand-orange group-hover:text-white"} />}
+                {isSelected && <Check size={14} className={optionClass ? "text-current" : "text-brand-primary group-hover:text-white"} />}
               </div>
             );
           }))}

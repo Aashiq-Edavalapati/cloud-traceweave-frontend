@@ -35,7 +35,7 @@ export default function GraphqlHeader({ activeId, configTab, setConfigTab, onOpe
         <div className="flex items-center gap-2 text-xs text-text-secondary w-full">
           <span className={isNew ? 'italic opacity-70' : ''}>{collectionName}</span>
           <span>/</span>
-          
+
           {isRenaming ? (
             <input
               autoFocus
@@ -44,7 +44,7 @@ export default function GraphqlHeader({ activeId, configTab, setConfigTab, onOpe
               onChange={(e) => setTempName(e.target.value)}
               onBlur={handleRenameSave}
               onKeyDown={(e) => e.key === 'Enter' && handleRenameSave()}
-              className="bg-bg-input text-text-primary border border-brand-orange px-1 py-0.5 rounded focus:outline-none"
+              className="bg-bg-input text-text-primary border border-brand-primary px-1 py-0.5 rounded focus:outline-none"
             />
           ) : (
             <span
@@ -55,12 +55,12 @@ export default function GraphqlHeader({ activeId, configTab, setConfigTab, onOpe
             </span>
           )}
 
-          <ProtocolSwitcher 
-            currentProtocol={activeReqState.protocol || 'graphql'} 
-            onChange={(id) => store.updateActiveRequest('protocol', id)} 
+          <ProtocolSwitcher
+            currentProtocol={activeReqState.protocol || 'graphql'}
+            onChange={(id) => store.updateActiveRequest('protocol', id)}
           />
         </div>
-        
+
         <div className="flex gap-2 shrink-0">
           <button
             onClick={onOpenCookieModal}
@@ -71,7 +71,7 @@ export default function GraphqlHeader({ activeId, configTab, setConfigTab, onOpe
           </button>
           <button
             onClick={handleSaveClick}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border transition ${isDirty ? 'bg-bg-input border-brand-orange text-text-primary' : 'bg-bg-input border-border-subtle text-text-secondary'}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border transition ${isDirty ? 'bg-bg-input border-brand-primary text-text-primary' : 'bg-bg-input border-border-subtle text-text-secondary'}`}
           >
             <Save size={14} /> {isDirty ? 'Save*' : 'Saved'}
           </button>
@@ -79,26 +79,26 @@ export default function GraphqlHeader({ activeId, configTab, setConfigTab, onOpe
       </div>
 
       <div className="flex h-10 mb-4 rounded border border-border-subtle bg-bg-input z-10 relative">
-        <div className="flex items-center px-3 border-r border-border-subtle font-bold text-xs text-brand-orange select-none">
+        <div className="flex items-center px-3 border-r border-border-subtle font-bold text-xs text-brand-primary select-none">
           POST
         </div>
-        <UrlBar 
-          value={activeReqState.config?.url || ''} 
-          onChange={(val) => store.updateActiveRequestDeep(['config', 'url'], val)} 
+        <UrlBar
+          value={activeReqState.config?.url || ''}
+          onChange={(val) => store.updateActiveRequestDeep(['config', 'url'], val)}
         />
-        <button 
-          onClick={store.executeRequest} 
-          disabled={store.isLoading} 
-          className="bg-brand-blue hover:bg-blue-600 text-white font-medium px-4 flex items-center gap-2 rounded-r w-[90px] justify-center"
+        <button
+          onClick={store.executeRequest}
+          disabled={store.isLoading}
+          className="bg-brand-primary hover:bg-brand-glow text-brand-surface font-black px-4 flex items-center gap-2 rounded-r w-[90px] justify-center transition shadow-glow-sm"
         >
           {store.isLoading ? <Loader2 className="animate-spin" size={16} /> : <><Play size={14} fill="currentColor" /> Query</>}
         </button>
       </div>
 
-      <Tabs 
-        tabs={['Query', 'Variables', 'Headers', 'Cookies', 'Authorization', 'Schema', 'Docs']} 
-        activeTab={configTab} 
-        onTabClick={setConfigTab} 
+      <Tabs
+        tabs={['Query', 'Variables', 'Headers', 'Cookies', 'Authorization', 'Schema', 'Docs']}
+        activeTab={configTab}
+        onTabClick={setConfigTab}
       />
     </div>
   );

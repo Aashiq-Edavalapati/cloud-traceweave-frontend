@@ -12,8 +12,8 @@ export const GridBackground = () => (
       transition={{ duration: 1 }}
       style={{
         backgroundImage: `
-          linear-gradient(rgba(255,108,55,0.15) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,108,55,0.15) 1px, transparent 1px)
+          linear-gradient(rgba(157, 90, 229,0.15) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(157, 90, 229,0.15) 1px, transparent 1px)
         `,
         backgroundSize: '60px 60px'
       }}

@@ -15,14 +15,14 @@ export default function AuthIllustration() {
       <div className="relative z-10 text-center space-y-6 max-w-lg px-8">
         <div className="relative w-48 h-48 mx-auto animate-pulse">
             {/* Inner Glow */}
-            <div className="absolute inset-0 rounded-full bg-brand-orange blur-3xl opacity-20"></div>
+            <div className="absolute inset-0 rounded-full bg-brand-primary blur-3xl opacity-20"></div>
             
-            <svg viewBox="0 0 200 200" className="w-full h-full stroke-brand-orange fill-none" strokeWidth="2">
+            <svg viewBox="0 0 200 200" className="w-full h-full stroke-brand-primary fill-none" strokeWidth="2">
                 {/* Central Hub */}
-                <circle cx="100" cy="100" r="20" className="fill-bg-base stroke-brand-orange" />
+                <circle cx="100" cy="100" r="20" className="fill-bg-base stroke-brand-primary" />
                 
                 {/* Orbiting Nodes (Static representation of a distributed system) */}
-                <circle cx="100" cy="40" r="5" className="fill-brand-orange" />
+                <circle cx="100" cy="40" r="5" className="fill-brand-primary" />
                 <path d="M100 80 L100 45" className="opacity-50" />
                 
                 <circle cx="160" cy="100" r="5" className="fill-brand-blue" />
@@ -34,7 +34,7 @@ export default function AuthIllustration() {
         </div>
 
         <h1 className="text-3xl font-bold tracking-tight text-text-primary">
-          Debug Faster. <span className="text-brand-orange">Trace Deeper.</span>
+          Debug Faster. <span className="text-brand-primary">Trace Deeper.</span>
         </h1>
         <p className="text-text-secondary text-lg">
             The unified platform for API engineering, distributed tracing, and automated scenario testing.

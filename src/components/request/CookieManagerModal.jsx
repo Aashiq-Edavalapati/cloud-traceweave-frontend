@@ -36,12 +36,12 @@ const CookieForm = ({ domain, initialData, onSave, onCancel }) => {
             <div className="grid grid-cols-2 gap-3 mb-3">
                 <div className="flex flex-col gap-1">
                     <label className="text-[10px] uppercase text-[#666]">Name</label>
-                    <input className="bg-[#222] text-xs text-[#eee] px-2 py-1 rounded border border-[#444] outline-none focus:border-[#FF6C37]"
+                    <input className="bg-[#222] text-xs text-[#eee] px-2 py-1 rounded border border-[#444] outline-none focus:border-[var(--brand-primary)]"
                         value={formData.key} onChange={e => setFormData({...formData, key: e.target.value})} />
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-[10px] uppercase text-[#666]">Value</label>
-                    <input className="bg-[#222] text-xs text-[#eee] px-2 py-1 rounded border border-[#444] outline-none focus:border-[#FF6C37]"
+                    <input className="bg-[#222] text-xs text-[#eee] px-2 py-1 rounded border border-[#444] outline-none focus:border-[var(--brand-primary)]"
                         value={formData.value} onChange={e => setFormData({...formData, value: e.target.value})} />
                 </div>
             </div>
@@ -54,19 +54,19 @@ const CookieForm = ({ domain, initialData, onSave, onCancel }) => {
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className="text-[10px] uppercase text-[#666]">Path</label>
-                    <input className="bg-[#222] text-xs text-[#eee] px-2 py-1 rounded border border-[#444] outline-none focus:border-[#FF6C37]"
+                    <input className="bg-[#222] text-xs text-[#eee] px-2 py-1 rounded border border-[#444] outline-none focus:border-[var(--brand-primary)]"
                         value={formData.path} onChange={e => setFormData({...formData, path: e.target.value})} />
                 </div>
             </div>
 
             <div className="flex items-center gap-4 mb-4">
                  <label className="flex items-center gap-2 text-xs text-[#ccc] cursor-pointer select-none">
-                    <input type="checkbox" className="accent-[#FF6C37]" 
+                    <input type="checkbox" className="accent-[var(--brand-primary)]" 
                         checked={formData.secure} onChange={e => setFormData({...formData, secure: e.target.checked})} />
                     Secure
                  </label>
                  <label className="flex items-center gap-2 text-xs text-[#ccc] cursor-pointer select-none">
-                    <input type="checkbox" className="accent-[#FF6C37]" 
+                    <input type="checkbox" className="accent-[var(--brand-primary)]" 
                         checked={formData.httpOnly} onChange={e => setFormData({...formData, httpOnly: e.target.checked})} />
                     HttpOnly
                  </label>
@@ -76,7 +76,7 @@ const CookieForm = ({ domain, initialData, onSave, onCancel }) => {
                 <label className="text-[10px] uppercase text-[#666]">Expires (Optional)</label>
                 <input 
                     type="datetime-local"
-                    className="bg-[#222] text-xs text-[#eee] px-2 py-1 rounded border border-[#444] outline-none focus:border-[#FF6C37]"
+                    className="bg-[#222] text-xs text-[#eee] px-2 py-1 rounded border border-[#444] outline-none focus:border-[var(--brand-primary)]"
                     value={formData.expires} 
                     onChange={e => setFormData({...formData, expires: e.target.value})} 
                 />
@@ -85,7 +85,7 @@ const CookieForm = ({ domain, initialData, onSave, onCancel }) => {
 
             <div className="flex gap-2 justify-end">
                 <button onClick={onCancel} className="text-xs text-[#999] hover:text-[#eee] px-3 py-1.5">Cancel</button>
-                <button onClick={handleSubmit} className="text-xs bg-[#FF6C37] text-white px-3 py-1.5 rounded hover:bg-[#e65b2b]">
+                <button onClick={handleSubmit} className="text-xs bg-[var(--brand-primary)] text-white px-3 py-1.5 rounded hover:bg-[#e65b2b]">
                     {initialData ? 'Update Cookie' : 'Save Cookie'}
                 </button>
             </div>
@@ -210,7 +210,7 @@ export default function CookieManagerModal({ isOpen, onClose, initialDomain }) {
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-[#333]">
                     <div className="flex gap-6">
-                        <h2 className="text-sm font-semibold border-b-2 border-[#FF6C37] pb-4 -mb-4 px-1">Manage Cookies</h2>
+                        <h2 className="text-sm font-semibold border-b-2 border-[var(--brand-primary)] pb-4 -mb-4 px-1">Manage Cookies</h2>
                         <h2 className="text-sm font-semibold text-[#666] cursor-not-allowed">Sync Cookies</h2>
                     </div>
                     <button onClick={onClose} className="text-[#666] hover:text-[#eee]">
@@ -327,7 +327,7 @@ export default function CookieManagerModal({ isOpen, onClose, initialDomain }) {
                                                         setEditingCookieId(null);
                                                         setAddingCookieTo(domain);
                                                     }}
-                                                    className="text-xs text-[#999] hover:text-[#FF6C37] py-1 flex items-center gap-1"
+                                                    className="text-xs text-[#999] hover:text-[var(--brand-primary)] py-1 flex items-center gap-1"
                                                 >
                                                     <Plus size={12} /> Add Cookie
                                                 </button>

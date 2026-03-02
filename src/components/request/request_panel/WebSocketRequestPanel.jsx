@@ -41,7 +41,7 @@ export default function WebsocketRequestPanel({ activeId }) {
           <div className="p-6 h-full text-xs text-text-secondary">
              <h3 className="font-semibold text-text-primary mb-4">WebSocket Settings</h3>
              <label className="flex items-center gap-3 select-none">
-                 <input type="checkbox" className="accent-brand-orange cursor-pointer" defaultChecked />
+                 <input type="checkbox" className="accent-brand-primary cursor-pointer" defaultChecked />
                  Follow Redirects during Handshake
              </label>
           </div>

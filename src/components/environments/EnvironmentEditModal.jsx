@@ -46,7 +46,7 @@ export default function EnvironmentEditModal({ isOpen, onClose, environment }) {
                                     onChange={(e) => store.updateEnvironmentVariable(environment.id, e.target.value, value, false, key)}
                                 />
                                 <input 
-                                    className="bg-transparent p-2 text-brand-orange focus:outline-none font-mono border-l border-border-subtle"
+                                    className="bg-transparent p-2 text-brand-primary focus:outline-none font-mono border-l border-border-subtle"
                                     value={value}
                                     onChange={(e) => store.updateEnvironmentVariable(environment.id, key, e.target.value, false)}
                                 />

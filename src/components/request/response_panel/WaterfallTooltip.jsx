@@ -16,7 +16,7 @@ const WaterfallTooltip = ({ metrics }) => {
     // Calculate starts and widths for waterfall blocks
     const segments = [
         { label: 'DNS Lookup', value: dns, color: 'bg-blue-500', start: 0 },
-        { label: 'TCP Connection', value: tcp, color: 'bg-orange-500', start: dns },
+        { label: 'TCP Connection', value: tcp, color: 'bg-brand-primary', start: dns },
         { label: 'SSL Handshake', value: tls, color: 'bg-purple-500', start: dns + tcp },
         { label: 'TTFB', value: ttfb, color: 'bg-green-500', start: dns + tcp + tls },
         { label: 'Downloading', value: download, color: 'bg-cyan-500', start: dns + tcp + tls + ttfb },
@@ -26,7 +26,7 @@ const WaterfallTooltip = ({ metrics }) => {
         <div className="w-64 p-4 bg-[#0A0A0A] border border-[#252525] rounded-lg shadow-2xl backdrop-blur-xl">
             <div className="flex justify-between items-center mb-4 pb-2 border-b border-[#1F1F1F]">
                 <span className="font-semibold text-xs text-[#EDEDED] tracking-wide uppercase">Timing Metrics</span>
-                <span className="text-xs font-mono font-bold text-[#FF6C37]">{total} ms</span>
+                <span className="text-xs font-mono font-bold text-[var(--brand-primary)]">{total} ms</span>
             </div>
 
             <div className="space-y-3">

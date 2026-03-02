@@ -62,7 +62,7 @@ export default function HttpRequestPanel({ activeId }) {
       {/* --- RESIZE HANDLE --- */}
       <div
         onMouseDown={startResize}
-        className="h-1 bg-border-subtle hover:bg-brand-orange cursor-row-resize z-20 shrink-0 transition-colors relative"
+        className="h-1 bg-border-subtle hover:bg-brand-primary cursor-row-resize z-20 shrink-0 transition-colors relative"
       >
         <div className="absolute inset-x-0 -top-1 -bottom-1"></div>
       </div>

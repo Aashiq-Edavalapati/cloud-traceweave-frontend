@@ -19,14 +19,14 @@ describe('Tabs', () => {
     it('applies active styles to the active tab', () => {
         render(<Tabs {...mockProps} />);
         const activeTab = screen.getByText('Tab1');
-        expect(activeTab).toHaveClass('text-text-primary', 'border-brand-orange');
+        expect(activeTab).toHaveClass('text-text-primary', 'border-brand-primary');
     });
 
     it('applies inactive styles to inactive tabs', () => {
         render(<Tabs {...mockProps} />);
         const inactiveTab = screen.getByText('Tab2');
         expect(inactiveTab).toHaveClass('border-transparent');
-        expect(inactiveTab).not.toHaveClass('text-text-primary', 'border-brand-orange');
+        expect(inactiveTab).not.toHaveClass('text-text-primary', 'border-brand-primary');
     });
 
     it('calls onTabClick when a tab is clicked', () => {

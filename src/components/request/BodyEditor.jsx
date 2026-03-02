@@ -42,7 +42,7 @@ export default function BodyEditor() {
                                 name="bodyType"
                                 checked={bodyState.type === type.id}
                                 onChange={() => updateBody('type', type.id)}
-                                className="accent-brand-orange cursor-pointer"
+                                className="accent-brand-primary cursor-pointer"
                             />
                             <span className={bodyState.type === type.id ? 'text-text-primary' : 'text-text-secondary group-hover:text-text-primary'}>
                                 {type.label}
@@ -54,7 +54,7 @@ export default function BodyEditor() {
                 {/* JSON Dropdown for Raw */}
                 {bodyState.type === 'raw' && (
                     <div className="relative group">
-                        <button className="flex items-center gap-1 text-brand-orange font-bold hover:text-orange-400">
+                        <button className="flex items-center gap-1 text-brand-primary font-bold hover:text-brand-primary">
                             {RAW_LANGUAGES.find(l => l.id === bodyState.language)?.label || 'Text'}
                             <ChevronDown size={10} />
                         </button>
@@ -63,7 +63,7 @@ export default function BodyEditor() {
                                 <div
                                     key={lang.id}
                                     onClick={() => updateBody('language', lang.id)}
-                                    className={`px-3 py-1.5 hover:bg-brand-blue hover:text-white cursor-pointer ${bodyState.language === lang.id ? 'text-brand-orange font-bold' : 'text-text-secondary'}`}
+                                    className={`px-3 py-1.5 hover:bg-brand-blue hover:text-white cursor-pointer ${bodyState.language === lang.id ? 'text-brand-primary font-bold' : 'text-text-secondary'}`}
                                 >
                                     {lang.label}
                                 </div>
@@ -109,11 +109,11 @@ export default function BodyEditor() {
                 {bodyState.type === 'binary' && (
                     <div className="flex flex-col items-center justify-center h-full text-text-secondary">
                         <div className="border border-dashed border-border-strong rounded-lg p-8 flex flex-col items-center gap-4 bg-bg-input/20">
-                            <UploadCloud size={32} className="text-brand-orange" />
+                            <UploadCloud size={32} className="text-brand-primary" />
                             <span className="text-xs">Select a file to upload</span>
                             <input
                                 type="file"
-                                className="text-xs text-text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-orange file:text-white hover:file:bg-orange-600"
+                                className="text-xs text-text-primary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-glow"
                                 onChange={(e) => updateBody('binaryPath', e.target.value)} // Mock path
                             />
                             {bodyState.binaryPath && <span className="text-[10px] font-mono text-text-muted">{bodyState.binaryPath}</span>}

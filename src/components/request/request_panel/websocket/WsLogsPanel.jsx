@@ -48,7 +48,7 @@ export default function WsLogsPanel({ wsState }) {
         <div className="flex items-center gap-1.5">
           <AnimatePresence>
             {msgCounts.sent > 0 && (
-              <motion.span key="sent" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-1 px-1.5 py-0.5 bg-orange-500/10 border border-orange-500/20 rounded text-[10px] text-orange-400 font-mono">
+              <motion.span key="sent" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-1 px-1.5 py-0.5 bg-brand-primary/10 border border-brand-primary/20 rounded text-[10px] text-brand-primary font-mono">
                 ↑ {msgCounts.sent}
               </motion.span>
             )}

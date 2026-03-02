@@ -36,7 +36,7 @@ export default function TraceViewer({ traceData }) {
                                 onClick={() => handleSpanClick(span)}
                                 className={`
                    group relative flex items-center h-8 rounded hover:bg-bg-input cursor-pointer transition-colors
-                   ${activeSpanId === span.id ? 'bg-bg-input ring-1 ring-brand-orange' : ''}
+                   ${activeSpanId === span.id ? 'bg-bg-input ring-1 ring-brand-primary' : ''}
                 `}
                             >
                                 {/* Visual Waterfall Bar */}
@@ -47,14 +47,14 @@ export default function TraceViewer({ traceData }) {
 
                                 {/* Label */}
                                 <span className="ml-3 text-xs font-mono text-text-primary flex items-center gap-2">
-                                    <span className="font-bold text-brand-orange">{span.service}</span>
+                                    <span className="font-bold text-brand-primary">{span.service}</span>
                                     <span className="text-text-secondary">/</span>
                                     {span.name}
                                     <span className="text-text-muted text-[10px]">({span.duration}ms)</span>
                                 </span>
 
                                 {/* Annotation Indicator */}
-                                {hasNote && <MessageSquare size={10} className="ml-auto mr-4 text-brand-orange fill-brand-orange" />}
+                                {hasNote && <MessageSquare size={10} className="ml-auto mr-4 text-brand-primary fill-brand-primary" />}
                             </div>
                         );
                     })}
@@ -74,12 +74,12 @@ export default function TraceViewer({ traceData }) {
                     <textarea
                         value={noteInput}
                         onChange={(e) => setNoteInput(e.target.value)}
-                        className="flex-1 bg-bg-input border border-border-subtle rounded p-2 text-xs text-text-primary focus:border-brand-orange outline-none resize-none mb-2"
+                        className="flex-1 bg-bg-input border border-border-subtle rounded p-2 text-xs text-text-primary focus:border-brand-primary outline-none resize-none mb-2"
                         placeholder="Add an observation or error note..."
                     />
                     <button
                         onClick={handleSaveNote}
-                        className="bg-brand-orange text-white text-xs font-bold py-1.5 rounded hover:bg-orange-600 transition"
+                        className="bg-brand-primary text-white text-xs font-bold py-1.5 rounded hover:bg-brand-glow transition"
                     >
                         Pin Note
                     </button>

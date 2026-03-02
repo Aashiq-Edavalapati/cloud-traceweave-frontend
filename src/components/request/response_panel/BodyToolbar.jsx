@@ -40,7 +40,7 @@ const BodyToolbar = ({ onWrapToggle, onSearch, onFilter, onCopy, onCopyLink, isW
               value={searchTerm}
               onChange={handleSearchChange}
               placeholder="Search in body..."
-              className="w-full h-7 px-3 text-xs bg-[#111] border border-[#252525] rounded text-[#EDEDED] placeholder-[#666] focus:outline-none focus:border-[#FF6C37] transition-colors"
+              className="w-full h-7 px-3 text-xs bg-[#111] border border-[#252525] rounded text-[#EDEDED] placeholder-[#666] focus:outline-none focus:border-[var(--brand-primary)] transition-colors"
             />
           </motion.div>
         )}

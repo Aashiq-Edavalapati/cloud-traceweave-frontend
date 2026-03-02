@@ -26,8 +26,8 @@ export default function EnvironmentManagerPanel({ isOpen, onClose, environment }
                 {/* Panel Header */}
                 <div className="px-6 py-4 border-b border-border-subtle flex justify-between items-center bg-bg-panel">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-brand-orange/10 rounded-md">
-                            <Globe size={20} className="text-brand-orange" />
+                        <div className="p-2 bg-brand-primary/10 rounded-md">
+                            <Globe size={20} className="text-brand-primary" />
                         </div>
                         <div>
                             <h2 className="text-base font-bold text-text-primary">Manage Environments</h2>
@@ -64,7 +64,7 @@ export default function EnvironmentManagerPanel({ isOpen, onClose, environment }
                                         onChange={(e) => store.updateEnvironmentVariable(environment.id, idx, 'value', e.target.value)}
                                     />
                                     <input 
-                                        className="bg-transparent p-3 text-brand-orange focus:outline-none font-mono border-l border-border-subtle"
+                                        className="bg-transparent p-3 text-brand-primary focus:outline-none font-mono border-l border-border-subtle"
                                         value={variable.value}
                                         onChange={(e) => store.updateEnvironmentVariable(environment.id, idx, 'value', e.target.value)}
                                     />
@@ -75,9 +75,9 @@ export default function EnvironmentManagerPanel({ isOpen, onClose, environment }
                             ))}
 
                             {/* Add New Row */}
-                            <div className="grid grid-cols-[1fr_1fr_1fr_40px] bg-brand-orange/5 items-center text-xs p-2 gap-2 border-b border-brand-orange/20">
+                            <div className="grid grid-cols-[1fr_1fr_1fr_40px] bg-brand-primary/5 items-center text-xs p-2 gap-2 border-b border-brand-primary/20">
                                 <input 
-                                    className="bg-bg-base border border-border-subtle rounded p-2 text-text-primary focus:outline-none font-mono focus:border-brand-orange"
+                                    className="bg-bg-base border border-border-subtle rounded p-2 text-text-primary focus:outline-none font-mono focus:border-brand-primary"
                                     placeholder="Add new variable"
                                     value={newKey}
                                     onChange={(e) => setNewKey(e.target.value)}
@@ -91,7 +91,7 @@ export default function EnvironmentManagerPanel({ isOpen, onClose, environment }
                                     onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                                 />
                                 <div className="text-text-muted italic px-2">Syncs automatically</div>
-                                <button className="flex justify-center text-white bg-brand-orange p-1.5 rounded hover:bg-orange-600 transition" onClick={handleAdd}>
+                                <button className="flex justify-center text-white bg-brand-primary p-1.5 rounded hover:bg-brand-glow transition" onClick={handleAdd}>
                                     <Plus size={14} />
                                 </button>
                             </div>

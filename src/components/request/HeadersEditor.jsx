@@ -179,7 +179,7 @@ export default function HeadersEditor() {
                                     type="checkbox" 
                                     checked={header.active !== false}
                                     onChange={() => toggleActive(index)}
-                                    className="accent-brand-orange cursor-pointer"
+                                    className="accent-brand-primary cursor-pointer"
                                 />
                             </div>
                             <input

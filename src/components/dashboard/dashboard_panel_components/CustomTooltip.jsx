@@ -15,36 +15,41 @@ export const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
             // Tooltip container
-            <div className="bg-[#111] border border-[#333] p-3 rounded shadow-xl text-xs">
+            <div className="glass-strong border border-white/10 p-4 rounded-2xl shadow-2xl text-[10px] font-black uppercase tracking-widest relative overflow-hidden min-w-[140px]">
+                <div className="absolute inset-0 bg-brand-primary/[0.03] pointer-events-none" />
 
                 {/* Tooltip label (e.g., time or category) */}
-                <p className="text-[#888] mb-2 font-mono">
+                <p className="text-brand-primary mb-3 font-black italic border-b border-white/10 pb-2">
                     {label}
                 </p>
 
                 {/* Display each data entry */}
-                {payload.map((entry, index) => (
-                    <div
-                        key={index}
-                        className="flex items-center gap-2 mb-1"
-                    >
-                        {/* Color indicator */}
+                <div className="space-y-2">
+                    {payload.map((entry, index) => (
                         <div
-                            className="w-2 h-2 rounded-full"
-                            style={{ backgroundColor: entry.color }}
-                        />
+                            key={index}
+                            className="flex items-center justify-between gap-4"
+                        >
+                            <div className="flex items-center gap-2">
+                                {/* Color indicator */}
+                                <div
+                                    className="w-1.5 h-1.5 rounded-full shadow-glow"
+                                    style={{ backgroundColor: entry.color }}
+                                />
 
-                        {/* Metric name */}
-                        <span className="text-[#CCC]">
-                            {entry.name}:
-                        </span>
+                                {/* Metric name */}
+                                <span className="text-text-muted">
+                                    {entry.name}:
+                                </span>
+                            </div>
 
-                        {/* Metric value */}
-                        <span className="font-mono text-white">
-                            {entry.value}
-                        </span>
-                    </div>
-                ))}
+                            {/* Metric value */}
+                            <span className="text-white font-mono opacity-90">
+                                {entry.value}
+                            </span>
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     }

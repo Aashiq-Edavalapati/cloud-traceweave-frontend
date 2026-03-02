@@ -10,7 +10,7 @@ const customJestConfig = {
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     testEnvironment: 'jest-environment-jsdom',
     transformIgnorePatterns: [
-        '/node_modules/(?!(lucide-react|recharts|d3-.*)/)',
+        '/node_modules/(?!(lucide-react|recharts|d3-.*|uuid)/)',
     ],
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',

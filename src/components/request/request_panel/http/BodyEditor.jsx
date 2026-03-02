@@ -41,7 +41,7 @@ export default function BodyEditor() {
                                 name="bodyType"
                                 checked={bodyState.type === type.id}
                                 onChange={() => updateBody('type', type.id)}
-                                className="accent-brand-orange cursor-pointer"
+                                className="accent-brand-primary cursor-pointer"
                             />
                             <span className={bodyState.type === type.id ? 'text-text-primary' : 'text-text-secondary group-hover:text-text-primary'}>
                                 {type.label}
@@ -52,7 +52,7 @@ export default function BodyEditor() {
 
                 {bodyState.type === 'raw' && (
                     <div className="relative group">
-                        <button className="flex items-center gap-1 text-brand-orange font-bold hover:text-orange-400">
+                        <button className="flex items-center gap-1 text-brand-primary font-bold hover:text-brand-primary">
                             {RAW_LANGUAGES.find(l => l.id === bodyState.language)?.label || 'Text'}
                             <ChevronDown size={10} />
                         </button>
@@ -61,7 +61,7 @@ export default function BodyEditor() {
                                 <div
                                     key={lang.id}
                                     onClick={() => updateBody('language', lang.id)}
-                                    className={`px-3 py-1.5 hover:bg-brand-blue hover:text-white cursor-pointer ${bodyState.language === lang.id ? 'text-brand-orange font-bold' : 'text-text-secondary'}`}
+                                    className={`px-3 py-1.5 hover:bg-brand-blue hover:text-white cursor-pointer ${bodyState.language === lang.id ? 'text-brand-primary font-bold' : 'text-text-secondary'}`}
                                 >
                                     {lang.label}
                                 </div>
@@ -119,7 +119,7 @@ export default function BodyEditor() {
                                 </>
                             ) : (
                                 <>
-                                    <UploadCloud size={32} className="text-brand-orange" />
+                                    <UploadCloud size={32} className="text-brand-primary" />
                                     <span className="text-xs">Select a file to upload</span>
                                     <input
                                         type="file"
@@ -129,7 +129,7 @@ export default function BodyEditor() {
                                             if (file) updateBody('binaryFile', file);
                                         }}
                                     />
-                                    <span className="bg-brand-orange text-white px-4 py-2 rounded-full text-xs font-bold pointer-events-none">Choose File</span>
+                                    <span className="bg-brand-primary text-white px-4 py-2 rounded-full text-xs font-bold pointer-events-none">Choose File</span>
                                 </>
                             )}
                         </div>

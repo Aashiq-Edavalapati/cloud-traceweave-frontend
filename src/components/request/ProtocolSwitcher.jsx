@@ -5,7 +5,7 @@ const PROTOCOLS = [
   { id: 'http', label: 'HTTP', icon: ArrowRightLeft, color: 'text-emerald-500' },
   { id: 'graphql', label: 'GraphQL', icon: Box, color: 'text-pink-500' },
   // { id: 'grpc', label: 'gRPC', icon: Zap, color: 'text-blue-400' },
-  { id: 'websocket', label: 'WebSocket', icon: Activity, color: 'text-orange-400' },
+  { id: 'websocket', label: 'WebSocket', icon: Activity, color: 'text-brand-primary' },
 ];
 
 export default function ProtocolSwitcher({ currentProtocol = 'http', onChange }) {
@@ -59,7 +59,7 @@ export default function ProtocolSwitcher({ currentProtocol = 'http', onChange })
               >
                 <Icon size={14} className={proto.color} />
                 <span>{proto.label}</span>
-                {isSelected && <Check size={12} className="ml-auto text-brand-orange" />}
+                {isSelected && <Check size={12} className="ml-auto text-brand-primary" />}
               </div>
             );
           })}

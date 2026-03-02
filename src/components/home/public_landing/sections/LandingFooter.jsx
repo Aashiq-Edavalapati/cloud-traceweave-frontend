@@ -8,9 +8,9 @@ export const LandingFooter = () => {
   return (
     <footer className="border-t border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl py-20">
       <div className="max-w-[1600px] mx-auto px-8">
-        
+
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
-          
+
           {/* Brand */}
           <div className="md:col-span-4">
             <div className="flex items-center gap-3 mb-6">
@@ -21,14 +21,14 @@ export const LandingFooter = () => {
               Next-generation distributed tracing for modern microservices architectures.
             </p>
             <div className="flex items-center gap-4">
-              <motion.a 
+              <motion.a
                 href="#"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 className="w-10 h-10 border border-white/20 rounded flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all backdrop-blur-sm"
               >
                 <Github size={18} />
               </motion.a>
-              <motion.a 
+              <motion.a
                 href="#"
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 className="w-10 h-10 border border-white/20 rounded flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all backdrop-blur-sm"
@@ -42,30 +42,30 @@ export const LandingFooter = () => {
           <div className="md:col-span-2">
             <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Product</h4>
             <ul className="space-y-3 text-sm text-white/60">
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Platform</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Changelog</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Roadmap</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Platform</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Pricing</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Changelog</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Roadmap</a></li>
             </ul>
           </div>
 
           <div className="md:col-span-2">
             <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Developers</h4>
             <ul className="space-y-3 text-sm text-white/60">
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Documentation</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">API Reference</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">SDKs</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">GitHub</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Documentation</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">API Reference</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">SDKs</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">GitHub</a></li>
             </ul>
           </div>
 
           <div className="md:col-span-2">
             <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Company</h4>
             <ul className="space-y-3 text-sm text-white/60">
-              <li><a href="#" className="hover:text-brand-orange transition-colors">About</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-brand-orange transition-colors">Contact</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">About</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Blog</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Careers</a></li>
+              <li><a href="#" className="hover:text-brand-primary transition-colors">Contact</a></li>
             </ul>
           </div>
 
@@ -86,7 +86,7 @@ export const LandingFooter = () => {
             © 2026 Trace-weave Inc. All rights reserved.
           </div>
           <div className="flex items-center gap-2 text-xs text-white/40 font-mono">
-            <motion.div 
+            <motion.div
               className="w-1.5 h-1.5 bg-green-500 rounded-full"
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{ duration: 2, repeat: Infinity }}

@@ -85,7 +85,7 @@ export const CreateWorkspaceModal = ({ isOpen, onClose }) => {
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         placeholder="e.g. Acme Production"
-                                        className="w-full px-4 py-2.5 bg-bg-input border border-border-subtle rounded-lg focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all text-sm text-text-primary"
+                                        className="w-full px-4 py-2.5 bg-bg-input border border-border-subtle rounded-lg focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all text-sm text-text-primary"
                                         required
                                     />
                                 </div>
@@ -97,7 +97,7 @@ export const CreateWorkspaceModal = ({ isOpen, onClose }) => {
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Briefly describe the purpose of this workspace..."
                                         rows={3}
-                                        className="w-full px-4 py-2.5 bg-bg-input border border-border-subtle rounded-lg focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all text-sm text-text-primary resize-none"
+                                        className="w-full px-4 py-2.5 bg-bg-input border border-border-subtle rounded-lg focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all text-sm text-text-primary resize-none"
                                     />
                                 </div>
 
@@ -112,7 +112,7 @@ export const CreateWorkspaceModal = ({ isOpen, onClose }) => {
                                     <button
                                         type="submit"
                                         disabled={isLoading || !name.trim()}
-                                        className="flex-1 px-4 py-2.5 bg-brand-orange hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-all shadow-[0_0_15px_rgba(255,108,55,0.2)] flex items-center justify-center gap-2"
+                                        className="flex-1 px-4 py-2.5 bg-brand-primary hover:bg-brand-glow disabled:opacity-50 disabled:cursor-not-allowed text-brand-surface text-sm font-black rounded-lg transition-all shadow-glow-sm flex items-center justify-center gap-2"
                                     >
                                         {isLoading ? (
                                             <>
@@ -132,3 +132,4 @@ export const CreateWorkspaceModal = ({ isOpen, onClose }) => {
         </AnimatePresence>
     );
 };
+

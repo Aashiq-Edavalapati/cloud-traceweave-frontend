@@ -32,7 +32,7 @@ const GlassSelect = ({ value, options, onChange, width = "w-48" }) => {
         <div className={`relative ${width}`} ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center justify-between w-full px-3 py-2 text-xs text-text-primary bg-bg-panel/40 backdrop-blur-md border border-border-subtle/50 rounded shadow-sm hover:bg-bg-panel/60 transition-all focus:outline-none focus:ring-1 focus:ring-brand-orange/50"
+                className="flex items-center justify-between w-full px-3 py-2 text-xs text-text-primary bg-bg-panel/40 backdrop-blur-md border border-border-subtle/50 rounded shadow-sm hover:bg-bg-panel/60 transition-all focus:outline-none focus:ring-1 focus:ring-brand-primary/50"
             >
                 <span>{selectedOption?.label}</span>
                 <ChevronDown size={14} className={`text-text-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
@@ -48,7 +48,7 @@ const GlassSelect = ({ value, options, onChange, width = "w-48" }) => {
                                 setIsOpen(false);
                             }}
                             className={`flex items-center justify-between px-3 py-2 text-xs cursor-pointer transition-colors hover:bg-white/5 ${
-                                value === option.value ? 'text-brand-orange bg-brand-orange/10' : 'text-text-primary'
+                                value === option.value ? 'text-brand-primary bg-brand-primary/10' : 'text-text-primary'
                             }`}
                         >
                             <span>{option.label}</span>
@@ -114,7 +114,7 @@ export default function AuthEditor() {
                             <label className="text-xs font-semibold text-text-primary">Token</label>
                             <input
                                 type="text"
-                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-orange font-mono transition-colors"
+                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-primary font-mono transition-colors"
                                 placeholder="Enter Bearer Token..."
                                 value={authState.bearer?.token || ''}
                                 onChange={(e) => updateAuthField('bearer', 'token', e.target.value)}
@@ -129,7 +129,7 @@ export default function AuthEditor() {
                             <label className="text-xs font-semibold text-text-primary">Username</label>
                             <input
                                 type="text"
-                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-orange font-mono transition-colors"
+                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-primary font-mono transition-colors"
                                 placeholder="Username"
                                 value={authState.basic?.username || ''}
                                 onChange={(e) => updateAuthField('basic', 'username', e.target.value)}
@@ -139,7 +139,7 @@ export default function AuthEditor() {
                             <label className="text-xs font-semibold text-text-primary">Password</label>
                             <input
                                 type="password"
-                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-orange font-mono transition-colors"
+                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-primary font-mono transition-colors"
                                 placeholder="Password"
                                 value={authState.basic?.password || ''}
                                 onChange={(e) => updateAuthField('basic', 'password', e.target.value)}
@@ -154,7 +154,7 @@ export default function AuthEditor() {
                             <label className="text-xs font-semibold text-text-primary">Key</label>
                             <input
                                 type="text"
-                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-orange font-mono transition-colors"
+                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-primary font-mono transition-colors"
                                 placeholder="x-api-key"
                                 value={authState.apikey?.key || ''}
                                 onChange={(e) => updateAuthField('apikey', 'key', e.target.value)}
@@ -164,7 +164,7 @@ export default function AuthEditor() {
                             <label className="text-xs font-semibold text-text-primary">Value</label>
                             <input
                                 type="text"
-                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-orange font-mono transition-colors"
+                                className="bg-bg-input/50 backdrop-blur-sm border border-border-subtle/50 rounded px-3 py-2 text-xs text-text-primary outline-none focus:border-brand-primary font-mono transition-colors"
                                 placeholder="Value"
                                 value={authState.apikey?.value || ''}
                                 onChange={(e) => updateAuthField('apikey', 'value', e.target.value)}

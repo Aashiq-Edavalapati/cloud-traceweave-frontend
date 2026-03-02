@@ -9,6 +9,7 @@ import { createRequestSlice } from './slices/requestSlice';
 import { createTabSlice } from './slices/tabSlice';
 import { createMonitorSlice } from './slices/monitorSlice';
 import { createExecutionSlice } from './slices/executionSlice';
+import { createHistorySlice } from './slices/historySlice';
 
 export const useAppStore = create(
   persist(
@@ -21,6 +22,7 @@ export const useAppStore = create(
       ...createTabSlice(set, get),
       ...createMonitorSlice(set, get),
       ...createExecutionSlice(set, get),
+      ...createHistorySlice(set, get),
 
       // --- Facade Actions ---
       deleteItem: async (id) => {

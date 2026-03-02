@@ -33,51 +33,56 @@ export const MetricCard = ({
 
     return (
         // Card container
-        <div className="flex flex-col p-5 bg-[#1A1A1A] border border-[#2A2A2A] rounded-sm hover:border-[#404040] transition-colors group">
+        <div className="flex flex-col p-6 glass-strong border border-white/5 rounded-3xl hover:border-brand-primary/30 transition-all hover:shadow-glow-sm group relative overflow-hidden">
+            <div className="absolute inset-0 bg-white/[0.01] pointer-events-none" />
 
             {/* Title and icon section */}
-            <div className="flex justify-between items-start mb-3">
-                <span className="text-xs font-medium text-[#888] uppercase tracking-wider">
+            <div className="flex justify-between items-start mb-4 relative z-10">
+                <span className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] italic group-hover:text-brand-primary transition-colors">
                     {title}
                 </span>
 
                 {/* Metric icon */}
-                <Icon
-                    size={16}
-                    className="text-[#444] group-hover:text-[#666] transition-colors"
-                />
+                <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:bg-brand-primary/10 group-hover:border-brand-primary/20 transition-all">
+                    <Icon
+                        size={16}
+                        className="text-text-muted group-hover:text-brand-primary transition-colors"
+                    />
+                </div>
             </div>
 
             {/* Metric value and unit */}
-            <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-mono font-medium text-[#EDEDED]">
+            <div className="flex items-baseline gap-2 relative z-10">
+                <span className="text-3xl font-black text-white tracking-tighter italic">
                     {value}
                 </span>
 
                 {/* Unit is optional */}
                 {unit && (
-                    <span className="text-sm text-[#666]">{unit}</span>
+                    <span className="text-xs font-black text-text-muted uppercase tracking-widest">{unit}</span>
                 )}
             </div>
 
             {/* Trend indicator */}
             <div
-                className={`mt-2 flex items-center text-xs font-medium ${isBad ? 'text-red-400' : 'text-emerald-400'
+                className={`mt-4 flex items-center text-[10px] font-black uppercase tracking-widest relative z-10 ${isBad ? 'text-red-400' : 'text-green-400'
                     }`}
             >
-                {/* Trend direction icon */}
-                {isPositive ? (
-                    <ArrowUpRight size={14} />
-                ) : (
-                    <ArrowDownRight size={14} />
-                )}
+                <div className={`p-1 rounded-lg ${isBad ? 'bg-red-500/10' : 'bg-green-500/10'} mr-2`}>
+                    {/* Trend direction icon */}
+                    {isPositive ? (
+                        <ArrowUpRight size={12} strokeWidth={3} />
+                    ) : (
+                        <ArrowDownRight size={12} strokeWidth={3} />
+                    )}
+                </div>
 
                 {/* Trend value */}
-                <span className="ml-1">{trend}</span>
+                <span className="font-black italic">{trend}</span>
 
                 {/* Comparison text */}
-                <span className="text-[#555] ml-2 font-normal">
-                    vs last hr
+                <span className="text-text-muted ml-3 font-bold opacity-40 lowercase">
+                    vs last hour
                 </span>
             </div>
         </div>

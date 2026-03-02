@@ -12,14 +12,14 @@ export const LandingNavbar = () => {
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
-    
+
     const updateTime = () => {
       const now = new Date();
       setTime(now.toLocaleTimeString('en-US', { hour12: false }));
     };
     updateTime();
     const interval = setInterval(updateTime, 1000);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       clearInterval(interval);
@@ -27,63 +27,48 @@ export const LandingNavbar = () => {
   }, []);
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-[#0A0A0A]/60 backdrop-blur-3xl border-b border-white/10 shadow-lg shadow-black/20' 
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+          ? 'glass-strong py-3'
+          : 'bg-transparent py-5'
+        }`}
     >
-      <div className="max-w-[1600px] mx-auto px-8 py-4">
+      <div className="max-w-[1600px] mx-auto px-8">
         <div className="flex items-center justify-between">
-          
+
           {/* Left: Logo + Status */}
-          <div className="flex items-center gap-12">
+          <div className="flex items-center gap-10">
             <Link href="/" className="flex items-center gap-3 group">
-              <motion.div 
+              <motion.div
                 className="relative"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 400 }}
+                whileHover={{ scale: 1.1, rotate: [-5, 5, 0] }}
+                transition={{ duration: 0.4 }}
               >
-                <Image src="/logo.png" alt="Trace-weave" width={32} height={32} className="brightness-110" />
-                <motion.div 
-                  className="absolute -inset-2 bg-brand-orange/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"
-                  initial={false}
-                />
+                <div className="absolute -inset-2 bg-brand-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Image src="/logo.png" alt="Trace-weave" width={34} height={34} className="brightness-110 relative z-10" />
               </motion.div>
-              <span className="font-bold text-xl tracking-[-0.02em] text-white font-mono">TRACE–WEAVE</span>
+              <div className="flex flex-col">
+                <span className="font-black text-xl tracking-tighter text-white font-mono leading-none">TRACE–WEAVE</span>
+                <span className="text-[9px] text-brand-primary font-mono tracking-[0.3em] font-bold mt-1 opacity-60">DISTRIBUTED DEBUGGING</span>
+              </div>
             </Link>
-            
-            <motion.div 
-              className="hidden lg:flex items-center gap-2 text-[10px] font-mono text-white/40 uppercase tracking-wider"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <motion.div 
-                className="w-1.5 h-1.5 bg-green-500 rounded-full"
-                animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <span>v1.0.3 • {time}</span>
-            </motion.div>
           </div>
 
           {/* Center: Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-1 glass p-1 rounded-full border border-white/5">
             {['Platform', 'Solutions', 'Docs', 'Pricing'].map((item, i) => (
               <motion.div
                 key={item}
-                initial={{ opacity: 0, y: -20 }}
+                initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * i }}
+                transition={{ delay: i * 0.1 }}
               >
-                <Link 
+                <Link
                   href={`#${item.toLowerCase()}`}
-                  className="px-4 py-2 text-sm font-medium text-white/60 hover:text-white hover:bg-white/5 rounded transition-all duration-200"
+                  className="px-6 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-white/5 rounded-full transition-all duration-300"
                 >
                   {item}
                 </Link>
@@ -92,17 +77,17 @@ export const LandingNavbar = () => {
           </div>
 
           {/* Right: CTA */}
-          <motion.div 
-            className="flex items-center gap-3"
+          <motion.div
+            className="flex items-center gap-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            <Link 
+            <Link
               href="/login"
-              className="hidden sm:block px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
+              className="hidden sm:block text-sm font-bold text-text-secondary hover:text-white transition-colors tracking-wide"
             >
-              Log in
+              LOG IN
             </Link>
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -110,14 +95,12 @@ export const LandingNavbar = () => {
             >
               <Link
                 href="/login"
-                className="relative px-6 py-2.5 bg-brand-orange text-black text-sm font-bold rounded
-                            transition-all duration-200 ease-out
-                            hover:bg-[#ff7a4d] hover:shadow-[0_8px_30px_rgba(255,108,55,0.35)]
-                            active:scale-[0.97]"
-                >
-                Start Tracing
+                className="relative px-8 py-3 bg-brand-primary text-brand-surface text-sm font-black rounded-full
+                            transition-all duration-300 ease-out hover-glow
+                            hover:bg-brand-glow active:scale-[0.98]"
+              >
+                GO TO CONSOLE
               </Link>
-
             </motion.div>
           </motion.div>
         </div>

@@ -51,7 +51,7 @@ export default function WsHeader({ activeId, configTab, setConfigTab, wsState, o
               onChange={e => setTempName(e.target.value)}
               onBlur={handleRename}
               onKeyDown={e => e.key === 'Enter' && handleRename()}
-              className="bg-bg-input text-text-primary border border-brand-orange px-1.5 py-0.5 rounded text-xs focus:outline-none"
+              className="bg-bg-input text-text-primary border border-brand-primary px-1.5 py-0.5 rounded text-xs focus:outline-none"
             />
           ) : (
             <span
@@ -74,7 +74,7 @@ export default function WsHeader({ activeId, configTab, setConfigTab, wsState, o
           whileTap={{ scale: 0.96 }}
           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border transition-colors shrink-0 ${
             requiresSave
-              ? 'bg-brand-orange/10 border-brand-orange/50 text-brand-orange'
+              ? 'bg-brand-primary/10 border-brand-primary/50 text-brand-primary'
               : 'bg-bg-input border-border-subtle text-text-secondary hover:text-text-primary'
           }`}
         >

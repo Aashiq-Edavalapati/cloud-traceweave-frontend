@@ -40,7 +40,7 @@ export const SocialProof = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
         >
-          <span className="text-xs font-mono text-brand-orange uppercase tracking-widest">Trusted By</span>
+          <span className="text-xs font-mono text-brand-primary uppercase tracking-widest">Trusted By</span>
           <h3 className="text-3xl font-bold text-white mt-2">Engineering Teams at Top Companies</h3>
         </motion.div>
 
@@ -52,11 +52,11 @@ export const SocialProof = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 + (i * 0.1) }}
               whileHover={{ y: -8 }}
-              className="group p-8 bg-[#0D0D0D]/60 backdrop-blur-2xl border border-white/10 hover:border-brand-orange/30 rounded-xl transition-all duration-300"
+              className="group p-8 bg-[#0D0D0D]/60 backdrop-blur-2xl border border-white/10 hover:border-brand-primary/30 rounded-xl transition-all duration-300"
             >
               {/* Metric */}
               <div className="mb-6">
-                <div className="text-5xl font-black text-brand-orange/30 font-mono group-hover:text-brand-orange/60 transition-colors">
+                <div className="text-5xl font-black text-brand-primary/30 font-mono group-hover:text-brand-primary/60 transition-colors">
                   {testimonial.metric.value}
                 </div>
                 <div className="text-xs text-white/40 uppercase tracking-wider mt-1 font-mono">
@@ -73,7 +73,7 @@ export const SocialProof = () => {
               <div className="pt-6 border-t border-white/10">
                 <div className="font-semibold text-white">{testimonial.author}</div>
                 <div className="text-sm text-white/50 mt-1">
-                  {testimonial.role} • <span className="text-brand-orange">{testimonial.company}</span>
+                  {testimonial.role} • <span className="text-brand-primary">{testimonial.company}</span>
                 </div>
               </div>
             </motion.div>

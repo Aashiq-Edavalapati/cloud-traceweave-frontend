@@ -5,6 +5,8 @@ export const createEnvironmentSlice = (set, get) => ({
   selectedEnvIndex: 0,
   setSelectedEnvIndex: (idx) => set({ selectedEnvIndex: idx }),
   workspaceEnvironments: {}, // { workspaceId: [envs] }
+  globalEnvironments: [],
+  isGlobalEnvironmentsLoading: false,
 
   // --- Getters ---
   getWorkspaceEnvironments: () => {
@@ -49,6 +51,20 @@ export const createEnvironmentSlice = (set, get) => ({
       console.warn("Failed to fetch environments", error);
     }
   },
+
+  fetchGlobalEnvironments: async () => {
+        set({ isGlobalEnvironmentsLoading: true });
+        try {
+            const response = await environmentApi.getGlobalEnvironments();
+            set({ 
+                globalEnvironments: response.data || [], 
+                isGlobalEnvironmentsLoading: false 
+            });
+        } catch (error) {
+            console.error("Failed to fetch global environments:", error);
+            set({ isGlobalEnvironmentsLoading: false });
+        }
+    },
 
   createEnvironment: async ({ name, variables, isTemp = false } = {}) => {
     const { activeWorkspaceId } = get();

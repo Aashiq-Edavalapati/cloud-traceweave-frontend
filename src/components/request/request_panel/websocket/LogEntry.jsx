@@ -20,7 +20,7 @@ export default function LogEntry({ log, index }) {
   const size = byteSize(log.msg);
 
   const dirIcon =
-    log.type === 'out' ? <span className="text-orange-400 font-bold text-[10px]">↑</span>
+    log.type === 'out' ? <span className="text-brand-primary font-bold text-[10px]">↑</span>
       : log.type === 'in' ? <span className="text-green-400 font-bold text-[10px]">↓</span>
         : <span className="text-blue-400 font-bold text-[10px]">ℹ</span>;
 

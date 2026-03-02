@@ -51,7 +51,7 @@ export default function NewArtifactModal({ isOpen, onClose }) {
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-border-subtle flex justify-between items-center bg-bg-panel">
                     <h2 className="text-sm font-bold text-text-primary flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-brand-orange"></span>
+                        <span className="w-2 h-2 rounded-full bg-brand-primary"></span>
                         Create New Artifact
                     </h2>
                     <button onClick={onClose} className="text-text-secondary hover:text-text-primary transition-colors">
@@ -67,9 +67,9 @@ export default function NewArtifactModal({ isOpen, onClose }) {
                             onMouseEnter={() => setHoveredId(item.id)}
                             onMouseLeave={() => setHoveredId(null)}
                             onClick={() => handleCreate(item.id)}
-                            className="flex flex-col items-center justify-center gap-3 p-4 rounded-lg bg-bg-input/30 border border-transparent hover:bg-bg-input hover:border-brand-orange/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 aspect-square group text-center"
+                            className="flex flex-col items-center justify-center gap-3 p-4 rounded-lg bg-bg-input/30 border border-transparent hover:bg-bg-input hover:border-brand-primary/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 aspect-square group text-center"
                         >
-                            <item.icon size={24} className="text-text-secondary group-hover:text-brand-orange transition-colors duration-200" />
+                            <item.icon size={24} className="text-text-secondary group-hover:text-brand-primary transition-colors duration-200" />
                             <span className="text-xs font-medium text-text-primary">{item.label}</span>
                         </button>
                     ))}
@@ -77,7 +77,7 @@ export default function NewArtifactModal({ isOpen, onClose }) {
 
                 {/* Footer / Description */}
                 <div className="px-6 py-3 bg-bg-panel border-t border-border-subtle text-xs text-text-secondary h-14 flex items-center">
-                    <span className="font-mono text-brand-orange mr-2">{'>'}</span> {activeDesc}
+                    <span className="font-mono text-brand-primary mr-2">{'>'}</span> {activeDesc}
                 </div>
             </div>
         </div>

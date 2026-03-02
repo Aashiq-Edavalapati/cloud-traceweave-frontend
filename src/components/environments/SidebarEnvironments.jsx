@@ -59,8 +59,8 @@ export default function SidebarEnvironments() {
                     <div
                         onClick={(e) => { e.stopPropagation(); store.setSelectedEnvIndex(globalIdx); }}
                         className={`w-3 h-3 rounded-full border flex items-center justify-center transition-all shrink-0 ${globalIdx === store.selectedEnvIndex
-                            ? 'bg-brand-orange border-brand-orange'
-                            : 'border-border-strong hover:border-brand-orange'
+                            ? 'bg-brand-primary border-brand-primary'
+                            : 'border-border-strong hover:border-brand-primary'
                             }`}
                     >
                         {globalIdx === store.selectedEnvIndex && <Check size={8} className="text-black" strokeWidth={4} />}
@@ -69,7 +69,7 @@ export default function SidebarEnvironments() {
                     {isRenaming ? (
                         <input
                             autoFocus
-                            className="bg-transparent text-sm w-full outline-none text-text-primary border-b border-brand-orange"
+                            className="bg-transparent text-sm w-full outline-none text-text-primary border-b border-brand-primary"
                             value={renameValue}
                             onChange={(e) => setRenameValue(e.target.value)}
                             onBlur={submitRename}
@@ -98,13 +98,13 @@ export default function SidebarEnvironments() {
 
     return (
         <>
-            <div className="flex-1 flex flex-col h-full bg-bg-base">
+            <div className="flex-1 flex flex-col h-full bg-transparent">
                 <div className="p-3">
                     <div className="flex justify-between items-center mb-4 px-2">
                         <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">Environments</span>
                         <button
                             onClick={() => store.createEnvironment({ isTemp: true })}
-                            className="text-text-secondary hover:text-brand-orange hover:bg-bg-input p-1 rounded transition"
+                            className="text-text-secondary hover:text-brand-primary hover:bg-bg-input p-1 rounded transition"
                             title="Create Environment"
                         >
                             <Plus size={14} />
@@ -149,7 +149,7 @@ export default function SidebarEnvironments() {
                     }}
                     onDelete={() => {
                         showConfirm(
-                            'Are you sure you want to delete this environment?', 
+                            'Are you sure you want to delete this environment?',
                             () => {
                                 store.deleteEnvironment(contextMenu.targetId);
                             },

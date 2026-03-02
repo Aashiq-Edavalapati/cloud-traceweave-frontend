@@ -27,7 +27,7 @@ export default function KeyValueTable({ listKey, data, variant = 'standard' }) {
                 <div className="flex justify-center items-center h-full">
                     <div
                         className={`w-3 h-3 border rounded-sm flex items-center justify-center cursor-pointer transition-colors
-                     ${isAllSelected ? 'bg-brand-orange border-brand-orange' : 'border-border-strong hover:border-text-secondary'}
+                     ${isAllSelected ? 'bg-brand-primary border-brand-primary' : 'border-border-strong hover:border-text-secondary'}
                      ${data.length === 0 ? 'opacity-50 pointer-events-none' : ''} 
                     `}
                         onClick={handleToggleAll}
@@ -51,7 +51,7 @@ export default function KeyValueTable({ listKey, data, variant = 'standard' }) {
                         <div key={index} className="grid grid-cols-[30px_1.5fr_1.5fr_1fr_30px] border-b border-border-subtle text-xs text-text-primary group hover:bg-bg-input/30 transition-colors items-center h-[34px]">
                             {/* Row Active Checkbox */}
                             <div className="flex justify-center items-center h-full">
-                                <div className={`w-3 h-3 border rounded-sm flex items-center justify-center cursor-pointer ${item.active ? 'bg-brand-orange border-brand-orange' : 'border-border-strong'}`} onClick={() => store.updateRequestListConfig(listKey, index, 'active', !item.active)}>
+                                <div className={`w-3 h-3 border rounded-sm flex items-center justify-center cursor-pointer ${item.active ? 'bg-brand-primary border-brand-primary' : 'border-border-strong'}`} onClick={() => store.updateRequestListConfig(listKey, index, 'active', !item.active)}>
                                     {item.active && <Check size={10} className="text-black" strokeWidth={3} />}
                                 </div>
                             </div>
@@ -94,8 +94,8 @@ export default function KeyValueTable({ listKey, data, variant = 'standard' }) {
                                                 <span className="truncate">File lost. Re-select.</span>
                                             </div>
                                         ) : item.value instanceof File ? (
-                                            <div className="flex items-center gap-1.5 text-text-primary bg-bg-panel px-2 py-1 rounded text-[10px] border border-brand-orange w-full truncate">
-                                                <FileUp size={12} className="shrink-0 text-brand-orange" />
+                                            <div className="flex items-center gap-1.5 text-text-primary bg-bg-panel px-2 py-1 rounded text-[10px] border border-brand-primary w-full truncate">
+                                                <FileUp size={12} className="shrink-0 text-brand-primary" />
                                                 <span className="truncate">{item.value.name}</span>
                                             </div>
                                         ) : (

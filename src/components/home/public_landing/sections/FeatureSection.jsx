@@ -13,7 +13,7 @@ export const FeatureSection = () => {
       icon: Layers,
       title: 'Distributed Tracing',
       description: 'Visualize the complete journey of requests across Kafka, Redis, PostgreSQL, and microservices in real-time.',
-      color: '#FF6C37',
+      color: 'var(--brand-primary)',
       benefits: ['12-hop deep traces', 'Sub-millisecond accuracy', 'Zero code changes'],
       metric: { value: '99.9%', label: 'Capture rate' }
     },
@@ -56,12 +56,12 @@ export const FeatureSection = () => {
         >
           <div className="flex items-center gap-4 mb-6">
             <motion.div 
-              className="h-px bg-brand-orange"
+              className="h-px bg-brand-primary"
               initial={{ width: 0 }}
               animate={isInView ? { width: 64 } : {}}
               transition={{ delay: 0.3, duration: 0.6 }}
             />
-            <span className="text-xs font-mono text-brand-orange uppercase tracking-widest">Features</span>
+            <span className="text-xs font-mono text-brand-primary uppercase tracking-widest">Features</span>
           </div>
           <h2 className="text-5xl font-black tracking-tight text-white mb-6 font-mono">
             COMPLETE OBSERVABILITY

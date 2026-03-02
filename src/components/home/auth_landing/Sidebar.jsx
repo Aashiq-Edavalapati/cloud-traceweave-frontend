@@ -96,7 +96,7 @@ export const Sidebar = () => {
             <HelpCircle size={16} />
             <span>Help & Resources</span>
           </div>
-          {isHelpOpen && <div className="w-1.5 h-1.5 bg-brand-orange rounded-full" />}
+          {isHelpOpen && <div className="w-1.5 h-1.5 bg-brand-primary rounded-full" />}
         </button>
       </div>
     </div>

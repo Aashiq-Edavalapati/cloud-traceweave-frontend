@@ -16,7 +16,7 @@ const ToolbarButton = ({ icon: Icon, tooltip, onClick, active = false }) => {
         onMouseLeave={() => setShowTooltip(false)}
         className={`p-1.5 rounded transition-colors ${
           active 
-            ? 'bg-[#FF6C37] text-white' 
+            ? 'bg-[var(--brand-primary)] text-white' 
             : 'text-[#999] hover:text-[#EDEDED] hover:bg-[#1A1A1A]'
         }`}
       >

@@ -39,8 +39,8 @@ const MONACO_THEME_DEF = {
     'editor.lineHighlightBackground': '#1A1A1A',
     'editorLineNumber.foreground': '#444444',
     'editorLineNumber.activeForeground': '#888888',
-    'editor.selectionBackground': '#FF6C3730',
-    'editorCursor.foreground': '#FF6C37',
+    'editor.selectionBackground': 'var(--brand-primary)30',
+    'editorCursor.foreground': 'var(--brand-primary)',
   },
 };
 
@@ -49,26 +49,26 @@ export default function WsComposer({ wsState }) {
   const [message, setMessage] = useState('{\n  \n}');
   const [msgFormat, setMsgFormat] = useState('JSON');
   const [sendOnEnter, setSendOnEnter] = useState(false);
-  
+
   const sendMsgRef = useRef(null);
 
   const handleSend = useCallback(() => {
     sendMessage(message);
   }, [message, sendMessage]);
 
-  useEffect(() => { 
-    sendMsgRef.current = handleSend; 
+  useEffect(() => {
+    sendMsgRef.current = handleSend;
   }, [handleSend]);
 
   const handleTextKeyDown = useCallback((e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { 
-      e.preventDefault(); 
-      handleSend(); 
-      return; 
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      handleSend();
+      return;
     }
-    if (sendOnEnter && e.key === 'Enter' && !e.shiftKey) { 
-      e.preventDefault(); 
-      handleSend(); 
+    if (sendOnEnter && e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   }, [handleSend, sendOnEnter]);
 
@@ -85,18 +85,18 @@ export default function WsComposer({ wsState }) {
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-1 px-3 pt-2 pb-1.5 border-b border-border-subtle bg-bg-panel shrink-0">
         {MESSAGE_FORMATS.map(fmt => (
-          <button 
-            key={fmt} 
-            onClick={() => setMsgFormat(fmt)} 
-            className={`px-3 py-1 text-[11px] rounded transition-colors ${ msgFormat === fmt ? 'bg-bg-input text-text-primary border border-border-strong' : 'text-text-muted hover:text-text-secondary' }`}
+          <button
+            key={fmt}
+            onClick={() => setMsgFormat(fmt)}
+            className={`px-3 py-1 text-[11px] rounded transition-colors ${msgFormat === fmt ? 'bg-bg-input text-text-primary border border-border-strong' : 'text-text-muted hover:text-text-secondary'}`}
           >
             {fmt}
           </button>
         ))}
         {msgFormat !== 'JSON' && (
-          <button 
-            onClick={() => setSendOnEnter(v => !v)} 
-            className={`ml-1 flex items-center gap-1 px-2 py-1 text-[10px] rounded border transition-colors ${ sendOnEnter ? 'border-brand-orange/50 text-brand-orange bg-brand-orange/10' : 'border-transparent text-text-muted hover:text-text-secondary hover:border-border-subtle' }`}
+          <button
+            onClick={() => setSendOnEnter(v => !v)}
+            className={`ml-1 flex items-center gap-1 px-2 py-1 text-[10px] rounded border transition-colors ${sendOnEnter ? 'border-brand-primary/50 text-brand-primary bg-brand-primary/10' : 'border-transparent text-text-muted hover:text-text-secondary hover:border-border-subtle'}`}
           >
             <CornerDownLeft size={10} /> Send on Enter
           </button>
@@ -111,11 +111,11 @@ export default function WsComposer({ wsState }) {
           <textarea value={message} onChange={e => setMessage(e.target.value)} onKeyDown={handleTextKeyDown} className="w-full h-full bg-[#111] px-4 py-3 text-xs font-mono text-text-primary focus:outline-none resize-none placeholder-text-secondary/30" placeholder="Message to send…" />
         )}
 
-        <motion.button 
-          onClick={handleSend} 
-          disabled={!isConnected} 
-          whileTap={{ scale: 0.93 }} 
-          className="absolute bottom-3 right-3 bg-brand-blue text-white px-3 py-1.5 rounded flex items-center gap-1.5 text-[11px] font-medium hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-lg shadow-brand-blue/20"
+        <motion.button
+          onClick={handleSend}
+          disabled={!isConnected}
+          whileTap={{ scale: 0.93 }}
+          className="absolute bottom-3 right-3 bg-brand-primary text-brand-surface px-3 py-1.5 rounded flex items-center gap-1.5 text-[11px] font-black hover:bg-brand-glow disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-glow-sm"
         >
           <Send size={12} /> Send
         </motion.button>

@@ -24,7 +24,7 @@ const FloatingTooltip = ({ data, onSave, onManage, onMouseEnter, onMouseLeave })
 
     return createPortal(
         <div
-            className="fixed z-[9999] w-80 bg-bg-panel border border-border-strong rounded-lg shadow-2xl p-4 animate-in fade-in zoom-in-95 duration-200"
+            className="fixed z-[9998] w-80 bg-bg-panel border border-border-strong rounded-lg shadow-2xl p-4 animate-in fade-in zoom-in-95 duration-200"
             style={style}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
@@ -35,27 +35,27 @@ const FloatingTooltip = ({ data, onSave, onManage, onMouseEnter, onMouseLeave })
                         <AlertCircle size={10} /> No Environment Selected
                     </span>
                 ) : (
-                    <span>Resolved in: <span className="text-brand-orange">{selectedEnvName}</span></span>
+                    <span>Resolved in: <span className="text-brand-primary">{selectedEnvName}</span></span>
                 )}
             </div>
 
             <div className="text-xs mb-1 text-text-secondary">Current Value:</div>
 
             {isSystemNoEnv ? (
-                 <div className="text-sm text-text-muted italic bg-bg-base/50 p-2 rounded border border-border-subtle mb-3">
+                <div className="text-sm text-text-muted italic bg-bg-base/50 p-2 rounded border border-border-subtle mb-3">
                     Select an environment to resolve this variable.
-                 </div>
+                </div>
             ) : (
                 <>
                     {isEditing ? (
                         <div className="flex items-center gap-1 mb-2">
                             <input
-                                className="flex-1 bg-bg-input border border-brand-orange/50 rounded px-2 py-1 text-sm text-text-primary focus:outline-none"
+                                className="flex-1 bg-bg-input border border-brand-primary/50 rounded px-2 py-1 text-sm text-text-primary focus:outline-none"
                                 value={editValue}
                                 onChange={(e) => setEditValue(e.target.value)}
                                 autoFocus
                             />
-                            <button onClick={handleSaveClick} className="p-1 bg-brand-orange text-white rounded hover:bg-orange-600"><Check size={12} /></button>
+                            <button onClick={handleSaveClick} className="p-1 bg-brand-primary text-brand-surface rounded hover:bg-brand-glow"><Check size={12} /></button>
                             <button onClick={() => setIsEditing(false)} className="p-1 bg-bg-base text-text-secondary rounded hover:text-text-primary"><X size={12} /></button>
                         </div>
                     ) : (
@@ -75,7 +75,7 @@ const FloatingTooltip = ({ data, onSave, onManage, onMouseEnter, onMouseLeave })
             <div className="text-[10px] text-text-muted flex justify-between items-center">
                 <span>Scope: Environment</span>
                 {!isSystemNoEnv && (
-                    <span 
+                    <span
                         onClick={onManage}
                         className="text-brand-blue cursor-pointer hover:underline"
                     >
@@ -91,7 +91,7 @@ const FloatingTooltip = ({ data, onSave, onManage, onMouseEnter, onMouseLeave })
 export const UrlBar = ({ value, onChange }) => {
     const [isFocused, setIsFocused] = useState(false);
     const [tooltipData, setTooltipData] = useState(null);
-    
+
     // Refs for scrolling synchronization
     const inputRef = useRef(null);
     const overlayRef = useRef(null);
@@ -102,7 +102,7 @@ export const UrlBar = ({ value, onChange }) => {
     const selectedEnvIndex = store.selectedEnvIndex;
     const envs = store.getWorkspaceEnvironments();
     const selectedEnv = envs[selectedEnvIndex];
-    
+
     const isSystemNoEnv = selectedEnvIndex === -1;
     const selectedEnvName = selectedEnv?.name || 'No Environment';
 
@@ -154,7 +154,7 @@ export const UrlBar = ({ value, onChange }) => {
     const handleManageClick = () => {
         if (selectedEnv) {
             store.openEnvironmentTab(selectedEnv.id);
-            setTooltipData(null); 
+            setTooltipData(null);
         }
     };
 
@@ -165,9 +165,9 @@ export const UrlBar = ({ value, onChange }) => {
             if (part.startsWith('{{') && part.endsWith('}}')) {
                 const varName = part.slice(2, -2).trim();
                 const isResolved = getEnvVariable(varName) !== null;
-                
-                const statusClasses = isResolved 
-                    ? 'text-emerald-500 border-emerald-500/30' 
+
+                const statusClasses = isResolved
+                    ? 'text-emerald-500 border-emerald-500/30'
                     : 'text-red-500 border-red-500/30';
 
                 return (
@@ -195,7 +195,7 @@ export const UrlBar = ({ value, onChange }) => {
                     - Pointer events none (so clicks go to input)
                     - Hidden overflow (scrolled via JS)
                 */}
-                <div 
+                <div
                     ref={overlayRef}
                     className="absolute inset-0 flex items-center px-3 whitespace-pre overflow-hidden z-20 pointer-events-none"
                 >

@@ -10,7 +10,7 @@ const PROTOCOLS = [
     { id: 'http', label: 'HTTP', icon: ArrowRightLeft, color: 'text-emerald-500' },
     { id: 'graphql', label: 'GraphQL', icon: Box, color: 'text-pink-500' },
     { id: 'grpc', label: 'gRPC', icon: Zap, color: 'text-blue-400' },
-    { id: 'websocket', label: 'WebSocket', icon: Activity, color: 'text-orange-400' },
+    { id: 'websocket', label: 'WebSocket', icon: Activity, color: 'text-brand-primary' },
 ];
 
 export default function GrpcRequestPanel({ activeId }) {
@@ -73,7 +73,7 @@ export default function GrpcRequestPanel({ activeId }) {
           <div className="flex items-center gap-2 text-xs text-text-secondary w-full">
             <span className={!activeReqState.collectionId ? 'italic opacity-70' : ''}>{collectionName}</span> /
             {isRenaming ? (
-              <input autoFocus type="text" value={tempName} onChange={e => setTempName(e.target.value)} onBlur={handleRename} onKeyDown={e => e.key === 'Enter' && handleRename()} className="bg-bg-input text-text-primary border border-brand-orange px-1 py-0.5 rounded focus:outline-none" />
+              <input autoFocus type="text" value={tempName} onChange={e => setTempName(e.target.value)} onBlur={handleRename} onKeyDown={e => e.key === 'Enter' && handleRename()} className="bg-bg-input text-text-primary border border-brand-primary px-1 py-0.5 rounded focus:outline-none" />
             ) : (
               <span className="text-text-primary font-medium cursor-text hover:border-b" onDoubleClick={() => { setTempName(activeItemName); setIsRenaming(true); }}>{activeItemName}</span>
             )}
@@ -102,7 +102,7 @@ export default function GrpcRequestPanel({ activeId }) {
                                 >
                                     <Icon size={14} className={proto.color} />
                                     <span>{proto.label}</span>
-                                    {proto.id === 'grpc' && <Check size={12} className="ml-auto text-brand-orange" />}
+                                    {proto.id === 'grpc' && <Check size={12} className="ml-auto text-brand-primary" />}
                                 </div>
                             );
                         })}
@@ -110,7 +110,7 @@ export default function GrpcRequestPanel({ activeId }) {
                 )}
             </div>
           </div>
-          <button onClick={handleSave} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border transition ${isDirty ? 'bg-bg-input border-brand-orange text-text-primary' : 'bg-bg-input border-border-subtle text-text-secondary'}`}>
+          <button onClick={handleSave} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border transition ${isDirty ? 'bg-bg-input border-brand-primary text-text-primary' : 'bg-bg-input border-border-subtle text-text-secondary'}`}>
             <Save size={14} /> {isDirty ? 'Save*' : 'Saved'}
           </button>
         </div>
@@ -150,13 +150,13 @@ export default function GrpcRequestPanel({ activeId }) {
             <div className="flex-1 flex flex-col items-center justify-center text-text-secondary gap-2">
                 <FileJson size={32} className="opacity-50" />
                 <div className="text-sm">No .proto file loaded</div>
-                <button className="text-xs text-brand-orange hover:underline">Import Proto File</button>
+                <button className="text-xs text-brand-primary hover:underline">Import Proto File</button>
             </div>
         )}
       </div>
 
       {/* Response Pane */}
-      <div onMouseDown={(e) => { e.preventDefault(); setIsResizing(true); setDragStart({y: e.clientY, h: store.responsePaneHeight}); }} className="h-1 bg-border-subtle hover:bg-brand-orange cursor-row-resize shrink-0" />
+      <div onMouseDown={(e) => { e.preventDefault(); setIsResizing(true); setDragStart({y: e.clientY, h: store.responsePaneHeight}); }} className="h-1 bg-border-subtle hover:bg-brand-primary cursor-row-resize shrink-0" />
       <div style={{ height: store.responsePaneHeight }} className="shrink-0 overflow-hidden border-t border-border-subtle">
         <ResponsePane height={store.responsePaneHeight} />
       </div>

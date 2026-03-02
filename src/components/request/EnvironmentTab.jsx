@@ -27,8 +27,8 @@ export default function EnvironmentTab({ envId }) {
             <div className="p-6 border-b border-border-subtle shrink-0">
                 <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3 flex-1">
-                        <div className="p-2 bg-brand-orange/10 rounded-md">
-                            <Globe size={20} className="text-brand-orange" />
+                        <div className="p-2 bg-brand-primary/10 rounded-md">
+                            <Globe size={20} className="text-brand-primary" />
                         </div>
                         <div className="flex-1">
                             <input
@@ -43,7 +43,7 @@ export default function EnvironmentTab({ envId }) {
                         onClick={() => store.saveEnvironment(environment.id)}
                         disabled={!isDirty}
                         className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs font-medium transition-all ${isDirty
-                            ? 'bg-brand-orange text-white hover:bg-brand-orange/90 shadow-sm'
+                            ? 'bg-brand-primary text-brand-surface font-black hover:bg-brand-glow shadow-glow-sm'
                             : 'bg-bg-input text-text-secondary cursor-default opacity-70'
                             }`}
                     >
@@ -77,7 +77,7 @@ export default function EnvironmentTab({ envId }) {
                                         type="checkbox"
                                         checked={variable.enabled ?? true}
                                         onChange={(e) => store.updateEnvironmentVariable(environment.id, idx, 'enabled', e.target.checked)}
-                                        className="accent-brand-orange cursor-pointer"
+                                        className="accent-brand-primary cursor-pointer"
                                     />
                                 </div>
                                 <input
@@ -91,7 +91,7 @@ export default function EnvironmentTab({ envId }) {
                                     onChange={(e) => store.updateEnvironmentVariable(environment.id, idx, 'value', e.target.value)}
                                 />
                                 <input
-                                    className="bg-transparent p-3 text-brand-orange focus:outline-none font-mono border-l border-border-subtle"
+                                    className="bg-transparent p-3 text-brand-primary focus:outline-none font-mono border-l border-border-subtle"
                                     value={variable.value}
                                     onChange={(e) => store.updateEnvironmentVariable(environment.id, idx, 'value', e.target.value)}
                                 />
@@ -119,7 +119,7 @@ export default function EnvironmentTab({ envId }) {
                                 onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
                             />
                             <div className="p-3 text-text-tertiary italic border-l border-border-subtle"></div>
-                            <button className="flex justify-center text-text-secondary hover:text-brand-orange transition" onClick={handleAdd}>
+                            <button className="flex justify-center text-text-secondary hover:text-brand-primary transition" onClick={handleAdd}>
                                 <Plus size={16} />
                             </button>
                         </div>

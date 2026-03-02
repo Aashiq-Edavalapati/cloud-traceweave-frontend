@@ -6,6 +6,9 @@ export const createWorkspaceSlice = (set, get) => ({
     workspaceMembers: [],
     isLoadingWorkspaces: false,
     invitationError: null,
+    globalHistory: [],
+    globalStats: null,
+    pendingInvites: [],
 
     fetchWorkspaces: async () => {
         try {
@@ -71,7 +74,7 @@ export const createWorkspaceSlice = (set, get) => ({
         }
     },
 
-    inviteMember: async (email, role) => {
+    addMemberDirectly: async (email, role) => {
         const { activeWorkspaceId } = get();
         set({ invitationError: null });
         try {
@@ -94,13 +97,158 @@ export const createWorkspaceSlice = (set, get) => ({
         const { activeWorkspaceId } = get();
         try {
             await workspaceApi.removeMember(activeWorkspaceId, userId);
-            set(state => ({
-                workspaceMembers: state.workspaceMembers.filter(m => m.id !== userId)
-            }));
+            const updatedMembers = get().workspaceMembers.filter(m => m.userId !== userId);
+            const updatedWorkspaces = availableWorkspaces.map(ws => 
+            ws.id === activeWorkspaceId 
+                ? { ...ws, members: updatedMembers } 
+                : ws
+            );
+
+            set({
+                workspaceMembers: updatedMembers,
+                availableWorkspaces: updatedWorkspaces
+            });
             return { success: true };
         } catch (err) {
             const msg = err.response?.data?.message || err.message;
             console.warn("Remove Member Error:", msg);
+            return { success: false, error: msg };
+        }
+    },
+
+    updateMemberRole: async (userId, newRole) => {
+        const { activeWorkspaceId, availableWorkspaces } = get();
+        try {
+            await workspaceApi.updateMemberRole(activeWorkspaceId, userId, newRole);
+
+            // 1. Map through active members to update role
+            const updatedMembers = get().workspaceMembers.map(m => 
+                m.userId === userId ? { ...m, role: newRole } : m
+            );
+
+            // 2. Update the cache in availableWorkspaces
+            const updatedWorkspaces = availableWorkspaces.map(ws => 
+                ws.id === activeWorkspaceId 
+                    ? { ...ws, members: updatedMembers } 
+                    : ws
+            );
+
+            set({
+                workspaceMembers: updatedMembers,
+                availableWorkspaces: updatedWorkspaces
+            });
+
+            return { success: true };
+        } catch (err) {
+            const msg = err.response?.data?.message || err.message;
+            console.warn("Update Role Error:", msg);
+            return { success: false, error: msg };
+        }
+    },
+
+    toggleCommonLink: async (isActive) => {
+        const { activeWorkspaceId, fetchWorkspaces } = get();
+        await workspaceApi.toggleCommonLink(activeWorkspaceId, isActive);
+        await fetchWorkspaces(); // Refresh to get the new token/status
+    },
+    
+    resetCommonLink: async () => {
+        const { activeWorkspaceId, fetchWorkspaces } = get();
+        await workspaceApi.resetCommonLink(activeWorkspaceId);
+        await fetchWorkspaces();
+    },
+
+    leaveWorkspace: async (workspaceId) => {
+        const { availableWorkspaces, activeWorkspaceId, fetchWorkspaces } = get();
+        try {
+            // Use the current user's ID (we'll pass it from the component)
+            const userId = useAuthStore.getState().user?.id;
+            
+            await workspaceApi.removeMember(workspaceId, userId);
+
+            // 1. Remove from available workspaces list
+            const updatedWorkspaces = availableWorkspaces.filter(ws => ws.id !== workspaceId);
+
+            // 2. Logic to switch active workspace if the user just left the active one
+            let nextActiveId = activeWorkspaceId;
+            if (activeWorkspaceId === workspaceId) {
+                nextActiveId = updatedWorkspaces.length > 0 ? updatedWorkspaces[0].id : null;
+            }
+
+            set({
+                availableWorkspaces: updatedWorkspaces,
+                activeWorkspaceId: nextActiveId,
+                // If we left the active one, clear the members list
+                workspaceMembers: nextActiveId 
+                    ? updatedWorkspaces.find(w => w.id === nextActiveId)?.members || [] 
+                    : []
+            });
+
+            // 3. Re-fetch data for the new active workspace if it exists
+            if (nextActiveId) {
+                get().fetchWorkspaceData(nextActiveId);
+            }
+
+            return { success: true };
+        } catch (err) {
+            const msg = err.response?.data?.message || err.message;
+            console.warn("Leave Workspace Error:", msg);
+            return { success: false, error: msg };
+        }
+    },
+
+    fetchGlobalHistory: async () => {
+        try {
+            const response = await workspaceApi.getGlobalHistory({ page: 1, limit: 10 });
+            set({ globalHistory: response.data || [] });
+        } catch (error) {
+            console.warn("Failed to fetch global history", error);
+        }
+    },
+
+    fetchGlobalStats: async () => {
+        try {
+            const response = await workspaceApi.getGlobalStats();
+            set({ globalStats: response.data });
+        } catch (error) {
+            console.warn("Failed to fetch global stats", error);
+        }
+    },
+
+    fetchPendingInvites: async (workspaceId) => {
+        try {
+            const response = await workspaceApi.getPendingInvites(workspaceId);
+            set({ pendingInvites: response.data || [] });
+        } catch (error) {
+            console.warn("Failed to fetch pending invites", error);
+            set({ pendingInvites: [] });
+        }
+    },
+
+    createWorkspaceInvite: async (email, role) => {
+        const { activeWorkspaceId, pendingInvites } = get();
+        try {
+            const response = await workspaceApi.createInvite(activeWorkspaceId, email, role);
+            
+            // The backend returns the invite object with the inviteLink attached
+            const newInvite = response.data;
+            
+            set({ pendingInvites: [newInvite, ...pendingInvites] });
+            return { success: true, inviteLink: newInvite.inviteLink };
+        } catch (error) {
+            const msg = error.response?.data?.message || error.message;
+            return { success: false, error: msg };
+        }
+    },
+
+    acceptWorkspaceInvite: async (token) => {
+        try {
+            const response = await workspaceApi.acceptInvite(token);
+            // After accepting, we should refresh the workspaces so the new one appears in the sidebar
+            await get().fetchWorkspaces();
+            return { success: true, workspaceId: response.data.workspaceId };
+        } catch (error) {
+            const msg = error.response?.data?.message || error.message;
             return { success: false, error: msg };
         }
     },

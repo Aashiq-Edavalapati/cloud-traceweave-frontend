@@ -14,95 +14,129 @@ jest.mock('lucide-react', () => ({
     CheckCircle2: () => <span data-testid="icon-check" />,
     AlertCircle: () => <span data-testid="icon-alert" />,
     Clock: () => <span data-testid="icon-clock" />,
+    Trash: () => <span data-testid="icon-trash-2" />,
+    Loader2: () => <span data-testid="icon-loader" />,
+    Globe: () => <span data-testid="icon-globe" />,
+    FolderSync: () => <span data-testid="icon-folder" />,
+}));
+
+// Mock date-fns format function
+jest.mock('date-fns', () => ({
+    format: (date, format) => {
+        if (format === 'MMM d, yyyy') {
+            return 'Mar 2, 2026';
+        }
+        if (format === 'HH:mm') {
+            return '20:14';
+        }
+        return date.toString();
+    },
+    isValid: (date) => true,
 }));
 
 describe('SidebarHistory', () => {
     const mockHistory = [
         {
             id: 'h1',
-            config: {
-                url: 'http://api.test/users',
-                method: 'GET',
-            },
+            url: 'http://api.test/users',
+            method: 'GET',
             status: 200,
             duration: 100,
-            timestamp: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            timings: { total: 100 },
         },
         {
             id: 'h2',
-            config: {
-                url: 'http://api.test/login',
-                method: 'POST',
-            },
+            url: 'http://api.test/login',
+            method: 'POST',
             status: 401,
             duration: 50,
-            timestamp: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            timings: { total: 50 },
         },
     ];
 
-    const mockActions = {
-        getFormattedHistory: jest.fn().mockReturnValue(mockHistory),
-        clearHistory: jest.fn(),
-        removeFromHistory: jest.fn(),
-    };
+    const mockClearHistory = jest.fn();
+    const mockRemoveFromHistory = jest.fn();
+    const mockFetchHistory = jest.fn();
 
     beforeEach(() => {
         jest.clearAllMocks();
-        useAppStore.mockReturnValue(mockActions);
+        useAppStore.mockImplementation((selector) => {
+            const store = {
+                historyLogs: mockHistory,
+                fetchHistory: mockFetchHistory,
+                clearHistory: mockClearHistory,
+                removeFromHistory: mockRemoveFromHistory,
+            };
+            return selector(store);
+        });
     });
 
     it('renders history items', () => {
         render(<SidebarHistory />);
-        expect(screen.getByText('api.test/users')).toBeInTheDocument();
-        expect(screen.getByText('api.test/login')).toBeInTheDocument();
+        expect(screen.getByText(/http:\/\/api\.test\/users/)).toBeInTheDocument();
+        expect(screen.getByText(/http:\/\/api\.test\/login/)).toBeInTheDocument();
     });
 
     it('filters history by text', () => {
         render(<SidebarHistory />);
-        const input = screen.getByPlaceholderText('Filter history...');
+        const input = screen.getByPlaceholderText('Search logs...');
         fireEvent.change(input, { target: { value: 'users' } });
 
-        expect(screen.getByText('api.test/users')).toBeInTheDocument();
-        expect(screen.queryByText('api.test/login')).not.toBeInTheDocument();
+        expect(screen.getByText(/http:\/\/api\.test\/users/)).toBeInTheDocument();
+        expect(screen.queryByText(/http:\/\/api\.test\/login/)).not.toBeInTheDocument();
     });
 
     it('filters history by status (success)', () => {
         render(<SidebarHistory />);
-        const successFilter = screen.getByText('Success');
+        const successFilter = screen.getByText('2XX');
         fireEvent.click(successFilter);
 
-        expect(screen.getByText('api.test/users')).toBeInTheDocument();
-        expect(screen.queryByText('api.test/login')).not.toBeInTheDocument();
+        expect(screen.getByText(/http:\/\/api\.test\/users/)).toBeInTheDocument();
+        expect(screen.queryByText(/http:\/\/api\.test\/login/)).not.toBeInTheDocument();
     });
 
     it('toggles scope', () => {
         render(<SidebarHistory />);
         const globalBtn = screen.getByText('Global');
         fireEvent.click(globalBtn);
-        expect(mockActions.getFormattedHistory).toHaveBeenCalledWith('all');
+        expect(mockFetchHistory).toHaveBeenCalledWith('all', 1, 40);
 
         const workspaceBtn = screen.getByText('Workspace');
         fireEvent.click(workspaceBtn);
-        expect(mockActions.getFormattedHistory).toHaveBeenCalledWith('workspace');
+        expect(mockFetchHistory).toHaveBeenCalledWith('workspace', 1, 40);
     });
 
     it('clears history when trash icon is clicked', () => {
         render(<SidebarHistory />);
-        const clearBtn = screen.getByTitle('Clear All History');
+        const trashIcon = screen.getByTestId('icon-trash');
+        const clearBtn = trashIcon.closest('button');
         fireEvent.click(clearBtn);
-        expect(mockActions.clearHistory).toHaveBeenCalled();
+        expect(mockClearHistory).toHaveBeenCalled();
     });
 
-    it('removes single item when delete button is clicked', () => {
+    it('removes single item when delete button is hovered and clicked', () => {
         render(<SidebarHistory />);
-        const deleteBtns = screen.getAllByTitle('Delete');
-        fireEvent.click(deleteBtns[0]);
-        expect(mockActions.removeFromHistory).toHaveBeenCalledWith('h1');
+        const historyItems = screen.getAllByText(/http:\/\/api\.test/);
+        const firstItem = historyItems[0].closest('div.group');
+        const deleteButton = firstItem.querySelector('button');
+        fireEvent.click(deleteButton);
+        expect(mockRemoveFromHistory).toHaveBeenCalledWith('h1');
     });
 
     it('renders empty state when no history', () => {
-        mockActions.getFormattedHistory.mockReturnValue([]);
+        useAppStore.mockImplementation((selector) => {
+            const store = {
+                historyLogs: [],
+                fetchHistory: mockFetchHistory,
+                clearHistory: mockClearHistory,
+                removeFromHistory: mockRemoveFromHistory,
+            };
+            return selector(store);
+        });
         render(<SidebarHistory />);
-        expect(screen.getByText('No history found')).toBeInTheDocument();
+        // When history is empty, the component doesn't render items
+        expect(screen.queryByText(/http:\/\/api\.test/)).not.toBeInTheDocument();
     });
 });

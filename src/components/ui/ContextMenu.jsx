@@ -1,9 +1,12 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Copy, Edit2, Trash2, Pin, PinOff } from 'lucide-react';
 
 export default function ContextMenu({ x, y, onClose, onRename, onDuplicate, onDelete, isPinned, onPin }) {
     const ref = useRef(null);
+    
+    // Start hidden so we can measure it before the user sees it
+    const [style, setStyle] = useState({ top: y, left: x, visibility: 'hidden' });
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -15,12 +18,41 @@ export default function ContextMenu({ x, y, onClose, onRename, onDuplicate, onDe
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [onClose]);
 
+    // useLayoutEffect runs synchronously immediately after React has performed all DOM mutations
+    useLayoutEffect(() => {
+        if (ref.current && x !== null && y !== null) {
+            const rect = ref.current.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            let adjustedX = x;
+            let adjustedY = y;
+
+            // Collision Detection: Right Edge
+            if (x + rect.width > viewportWidth) {
+                adjustedX = x - rect.width;
+            }
+
+            // Collision Detection: Bottom Edge
+            if (y + rect.height > viewportHeight) {
+                adjustedY = y - rect.height;
+            }
+
+            // Apply adjusted coordinates and make it visible
+            setStyle({ 
+                top: adjustedY, 
+                left: adjustedX, 
+                visibility: 'visible' 
+            });
+        }
+    }, [x, y]);
+
     if (x === null || y === null) return null;
 
     return (
         <div
             ref={ref}
-            style={{ top: y, left: x }}
+            style={style}
             className="fixed z-[9999] w-40 bg-bg-panel border border-border-strong rounded shadow-xl py-1 flex flex-col"
         >
             <button onClick={onPin} className="flex items-center gap-2 px-3 py-2 text-xs text-text-primary hover:bg-brand-blue hover:text-white text-left">

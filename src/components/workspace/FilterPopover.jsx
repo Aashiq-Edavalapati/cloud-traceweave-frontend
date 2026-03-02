@@ -35,7 +35,7 @@ export const FilterPopover = ({ isOpen, onClose, pendingFilters, setPendingFilte
                             <button
                                 key={type}
                                 onClick={() => togglePending('type', type)}
-                                className={`w-full flex items-center justify-between px-2 py-1.5 text-xs rounded-md transition-colors ${pendingFilters.type.includes(type) ? 'bg-brand-orange/10 text-brand-orange' : 'text-text-muted hover:bg-white/5 hover:text-text-primary'
+                                className={`w-full flex items-center justify-between px-2 py-1.5 text-xs rounded-md transition-colors ${pendingFilters.type.includes(type) ? 'bg-brand-primary/10 text-brand-primary' : 'text-text-muted hover:bg-white/5 hover:text-text-primary'
                                     }`}
                             >
                                 <span>{type}</span>
@@ -74,7 +74,7 @@ export const FilterPopover = ({ isOpen, onClose, pendingFilters, setPendingFilte
                 </button>
                 <button
                     onClick={onApply}
-                    className="px-4 py-1.5 text-xs bg-brand-orange text-white rounded hover:bg-orange-600 font-medium transition-colors"
+                    className="px-4 py-1.5 text-xs bg-brand-primary text-white rounded hover:bg-brand-glow font-medium transition-colors"
                 >
                     Apply Filters
                 </button>

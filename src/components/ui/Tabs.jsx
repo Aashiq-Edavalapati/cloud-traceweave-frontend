@@ -11,7 +11,7 @@ export const Tabs = ({ tabs, activeTab, onTabClick }) => {
                     className={`
             pb-2 cursor-pointer border-b-2 transition-colors
             ${activeTab === tab
-                            ? 'text-text-primary border-brand-orange'
+                            ? 'text-text-primary border-brand-primary'
                             : 'border-transparent hover:text-text-primary'
                         }
           `}

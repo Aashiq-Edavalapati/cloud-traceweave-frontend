@@ -27,7 +27,7 @@ const PromptModalUI = ({ config, onClose }) => {
     return (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div className="bg-[#1E1E1E] border border-[#333] rounded-md shadow-2xl p-6 w-[350px] font-sans">
-                <h3 className="text-sm font-semibold text-[#FF6C37] mb-2">{config.title}</h3>
+                <h3 className="text-sm font-semibold text-[var(--brand-primary)] mb-2">{config.title}</h3>
                 <p className="text-xs text-[#ccc] mb-4">{config.message}</p>
                 <input 
                     autoFocus
@@ -35,7 +35,7 @@ const PromptModalUI = ({ config, onClose }) => {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                    className="w-full bg-[#1A1A1A] border border-[#333] rounded text-xs text-[#eee] px-3 py-2 outline-none focus:border-[#FF6C37] mb-5"
+                    className="w-full bg-[#1A1A1A] border border-[#333] rounded text-xs text-[#eee] px-3 py-2 outline-none focus:border-[var(--brand-primary)] mb-5"
                 />
                 <div className="flex justify-end gap-3">
                     <button 
@@ -46,7 +46,7 @@ const PromptModalUI = ({ config, onClose }) => {
                     </button>
                     <button 
                         onClick={handleSubmit}
-                        className="bg-[#FF6C37] text-white px-4 py-1.5 rounded text-xs hover:bg-[#e65b2b] transition-colors"
+                        className="bg-[var(--brand-primary)] text-black px-4 py-1.5 rounded text-xs hover:bg-[#bc80f1] transition-colors"
                     >
                         Submit
                     </button>
@@ -95,12 +95,12 @@ export function ModalProvider({ children }) {
                     {alertConfig.isOpen && (
                         <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm">
                             <div className="bg-[#1E1E1E] border border-[#333] rounded-md shadow-2xl p-6 w-[350px] font-sans">
-                                <h3 className="text-sm font-semibold text-[#FF6C37] mb-2">{alertConfig.title}</h3>
+                                <h3 className="text-sm font-semibold text-[var(--brand-primary)] mb-2">{alertConfig.title}</h3>
                                 <p className="text-xs text-[#ccc] mb-5">{alertConfig.message}</p>
                                 <div className="flex justify-end">
                                     <button 
                                         onClick={closeAlert}
-                                        className="bg-[#FF6C37] text-white px-4 py-1.5 rounded text-xs hover:bg-[#e65b2b] transition-colors"
+                                        className="bg-[var(--brand-primary)] text-black px-4 py-1.5 rounded text-xs hover:bg-[#bc80f1] transition-colors"
                                     >
                                         OK
                                     </button>
@@ -113,7 +113,7 @@ export function ModalProvider({ children }) {
                     {confirmConfig.isOpen && (
                         <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm">
                             <div className="bg-[#1E1E1E] border border-[#333] rounded-md shadow-2xl p-6 w-[350px] font-sans">
-                                <h3 className="text-sm font-semibold text-[#FF6C37] mb-2">{confirmConfig.title}</h3>
+                                <h3 className="text-sm font-semibold text-[var(--brand-primary)] mb-2">{confirmConfig.title}</h3>
                                 <p className="text-xs text-[#ccc] mb-5">{confirmConfig.message}</p>
                                 <div className="flex justify-end gap-3">
                                     <button 
@@ -124,7 +124,7 @@ export function ModalProvider({ children }) {
                                     </button>
                                     <button 
                                         onClick={handleConfirmClick}
-                                        className="bg-[#FF6C37] text-white px-4 py-1.5 rounded text-xs hover:bg-[#e65b2b] transition-colors"
+                                        className="bg-[var(--brand-primary)] text-black px-4 py-1.5 rounded text-xs hover:bg-[#bc80f1] transition-colors"
                                     >
                                         Confirm
                                     </button>

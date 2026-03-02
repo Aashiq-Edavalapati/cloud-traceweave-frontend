@@ -10,24 +10,45 @@ import WaterfallTooltip from './response_panel/WaterfallTooltip';
 import BodyToolbar from './response_panel/BodyToolbar';
 import TooltipContainer from './response_panel/TooltipContainer';
 
+// --- SUB-COMPONENTS (Defined outside to prevent re-initialization on every render) ---
+
+const HTTP_STATUS_CODES = {
+  200: 'OK', 201: 'Created', 202: 'Accepted', 204: 'No Content',
+  301: 'Moved Permanently', 302: 'Found', 304: 'Not Modified',
+  400: 'Bad Request', 401: 'Unauthorized', 403: 'Forbidden', 404: 'Not Found', 405: 'Method Not Allowed', 409: 'Conflict', 429: 'Conflict',
+  500: 'Internal Server Error', 502: 'Bad Gateway', 503: 'Service Unavailable', 504: 'Gateway Timeout'
+};
+
 const StatusBadge = ({ response }) => {
   if (!response) return null;
-  const status = response.isWorkflow ? (response.status === 'COMPLETED' ? 200 : 500) : response.status;
   
-  // FIX: Combine status code and text (e.g., "200 OK")
-  const statusText = response.isWorkflow ? response.status : (response.statusText || 'OK');
-  const displayText = `${status} ${statusText}`;
+  let status, statusText;
+
+  if (response.isWorkflow) {
+    status = response.status === 'COMPLETED' ? 200 : 500;
+    statusText = response.status; // e.g., "COMPLETED" or "FAILED"
+  } else {
+    status = response.status || 0;
+    // Fallback to our dictionary if statusText is missing
+    statusText = response.statusText || HTTP_STATUS_CODES[status] || 'Unknown';
+  }
+
+  const displayText = `${status} ${statusText}`.trim();
 
   let color = 'text-green-500';
   let bgColor = 'bg-green-500/10';
   let Icon = CheckCircle;
 
-  if (status >= 400) {
+  // Enhance color logic for 3XX, 4XX, 5XX
+  if (status >= 300 && status < 400) {
+    color = 'text-blue-500';
+    bgColor = 'bg-blue-500/10';
+    Icon = Info;
+  } else if (status >= 400 && status < 500) {
     color = 'text-yellow-500';
     bgColor = 'bg-yellow-500/10';
     Icon = AlertTriangle;
-  }
-  if (status >= 500) {
+  } else if (status >= 500 || status === 0) { // Catch 0 (Network Error)
     color = 'text-red-500';
     bgColor = 'bg-red-500/10';
     Icon = XCircle;
@@ -37,10 +58,12 @@ const StatusBadge = ({ response }) => {
     <div className="relative group">
       <motion.div
         whileHover={{ scale: 1.02 }}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-all ${bgColor} border border-transparent ${color === 'text-green-500' ? 'hover:border-green-500/20' : color === 'text-yellow-500' ? 'hover:border-yellow-500/20' : 'hover:border-red-500/20'}`}
+        className={`flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-all ${bgColor} border border-transparent ${color === 'text-green-500' ? 'hover:border-green-500/20' : color === 'text-yellow-500' ? 'hover:border-yellow-500/20' : color === 'text-blue-500' ? 'hover:border-blue-500/20' : 'hover:border-red-500/20'}`}
       >
         <Icon size={14} className={color} />
-        <span className={`font-semibold ${color} text-xs uppercase tracking-wider`}>{displayText}</span>
+        <span className={`font-semibold ${color} text-xs uppercase tracking-wider truncate max-w-[150px]`} title={displayText}>
+            {displayText}
+        </span>
       </motion.div>
     </div>
   );
@@ -64,7 +87,7 @@ const TimeBadge = ({ response, metrics }) => {
         className="flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-all bg-[#1A1A1A] hover:bg-[#252525] group/time"
       >
         <Clock size={14} className={isLive ? "text-green-500" : "text-[#999]"} />
-        <span className="text-xs font-mono text-[#EDEDED]">{duration} ms</span>
+        <span className="text-xs font-mono text-[#EDEDED]">{duration || 0} ms</span>
 
         {!response.isWorkflow && (
           <div className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-yellow-500/50'}`} />
@@ -87,7 +110,11 @@ const TimeBadge = ({ response, metrics }) => {
 
 const SizeBadge = ({ metrics }) => {
   if (!metrics) return null;
-  const totalSizeKB = (metrics.size.body + metrics.size.headers) / 1024;
+  
+  // Safety check to ensure numbers
+  const bodySize = Number(metrics.size?.body) || 0;
+  const headerSize = Number(metrics.size?.headers) || 0;
+  const totalSizeKB = (bodySize + headerSize) / 1024;
 
   return (
     <div className="relative group">
@@ -103,16 +130,16 @@ const SizeBadge = ({ metrics }) => {
         <TooltipContainer width="w-56">
           <div className="flex justify-between items-center mb-3 pb-2 border-b border-[#1F1F1F]">
             <span className="font-semibold text-xs text-[#EDEDED] tracking-wide uppercase">RESPONSE SIZE</span>
-            <span className="text-xs font-mono font-bold text-[#FF6C37]">{totalSizeKB.toFixed(2)} KB</span>
+            <span className="text-xs font-mono font-bold text-[var(--brand-primary)]">{totalSizeKB.toFixed(2)} KB</span>
           </div>
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="text-[#999]">Headers</span>
-              <span className="font-mono text-[#EDEDED]">{metrics.size.headers} B</span>
+              <span className="font-mono text-[#EDEDED]">{headerSize} B</span>
             </div>
             <div className="flex justify-between items-center text-xs">
               <span className="text-[#999]">Body</span>
-              <span className="font-mono text-[#EDEDED]">{(metrics.size.body / 1024).toFixed(2)} KB</span>
+              <span className="font-mono text-[#EDEDED]">{(bodySize / 1024).toFixed(2)} KB</span>
             </div>
           </div>
         </TooltipContainer>
@@ -122,7 +149,7 @@ const SizeBadge = ({ metrics }) => {
 };
 
 const NetworkBadge = ({ metrics }) => {
-  if (!metrics) return null;
+  if (!metrics || !metrics.network) return null;
   return (
     <div className="relative group">
       <motion.div
@@ -135,21 +162,21 @@ const NetworkBadge = ({ metrics }) => {
       <div className="hidden group-hover:block">
         <TooltipContainer width="w-72">
           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#1F1F1F]">
-            <Network size={14} className="text-[#FF6C37]" />
+            <Network size={14} className="text-[var(--brand-primary)]" />
             <span className="font-semibold text-xs text-[#EDEDED] tracking-wide uppercase">NETWORK INFO</span>
           </div>
           <div className="space-y-2.5">
             <div className="grid grid-cols-[100px_1fr] gap-2 text-xs">
               <span className="text-[#666]">Protocol</span>
-              <span className="text-[#EDEDED] font-mono">{metrics.network.proto.toUpperCase()}</span>
+              <span className="text-[#EDEDED] font-mono">{(metrics.network.proto || 'HTTP').toUpperCase()}</span>
             </div>
             <div className="grid grid-cols-[100px_1fr] gap-2 text-xs">
               <span className="text-[#666]">Remote</span>
-              <span className="text-[#EDEDED] font-mono text-[10px]">{metrics.network.remote}</span>
+              <span className="text-[#EDEDED] font-mono text-[10px]">{metrics.network.remote || 'Unknown'}</span>
             </div>
             <div className="grid grid-cols-[100px_1fr] gap-2 text-xs">
               <span className="text-[#666]">Local</span>
-              <span className="text-[#EDEDED] font-mono">{metrics.network.local}</span>
+              <span className="text-[#EDEDED] font-mono">{metrics.network.local || 'Unknown'}</span>
             </div>
           </div>
         </TooltipContainer>
@@ -174,7 +201,7 @@ const WorkflowReport = ({ report }) => {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-sm font-mono text-[#FF6C37] font-bold">{report.totalDuration}ms</div>
+            <div className="text-sm font-mono text-[var(--brand-primary)] font-bold">{report.totalDuration}ms</div>
             <div className="text-[10px] text-[#666] uppercase tracking-widest">Total Duration</div>
           </div>
         </div>
@@ -286,7 +313,7 @@ export default function ResponsePane({ height }) {
   return (
     <div style={{ height }} className="border-t border-[#1A1A1A] bg-[#050505] flex flex-col shrink-0 min-h-[50px]">
       <div className="flex items-center justify-between px-4 bg-[#0A0A0A] border-b border-[#1A1A1A] shrink-0 h-11">
-        <div className="flex items-center h-full gap-6">
+        <div className="flex items-center h-full gap-6 overflow-x-auto no-scrollbar">
           {tabs.map(tab => {
             const count = tab === 'Headers' ? Object.keys(response?.headers || {}).length
               : tab === 'Cookies' ? Object.keys(response?.cookies || {}).length
@@ -296,16 +323,16 @@ export default function ResponsePane({ height }) {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 whileHover={{ y: -1 }}
-                className={`relative h-full text-xs font-semibold transition-all flex items-center gap-2 tracking-wide ${activeTab === tab ? 'text-[#FF6C37]' : 'text-[#999] hover:text-[#EDEDED]'}`}
+                className={`relative h-full text-xs font-semibold transition-all flex items-center gap-2 tracking-wide whitespace-nowrap ${activeTab === tab ? 'text-[var(--brand-primary)]' : 'text-[#999] hover:text-[#EDEDED]'}`}
               >
                 {tab}
                 {count > 0 && (
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded ${activeTab === tab ? 'bg-[#FF6C37]/20 text-[#FF6C37]' : 'bg-[#1A1A1A] text-[#666]'}`}>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded ${activeTab === tab ? 'bg-[var(--brand-primary)]/20 text-[var(--brand-primary)]' : 'bg-[#1A1A1A] text-[#666]'}`}>
                     {count}
                   </span>
                 )}
                 {activeTab === tab && (
-                  <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#FF6C37]" />
+                  <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--brand-primary)]" />
                 )}
               </motion.button>
             )
@@ -313,7 +340,7 @@ export default function ResponsePane({ height }) {
         </div>
 
         {response && !isLoading && (
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 shrink-0 ml-4">
             <StatusBadge response={response} />
             <TimeBadge response={response} metrics={metrics} />
             <SizeBadge metrics={metrics} />
@@ -338,7 +365,7 @@ export default function ResponsePane({ height }) {
           {isLoading && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 flex flex-col items-center justify-center bg-[#050505]/90 z-20 backdrop-blur-sm">
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
-                <Loader2 className="text-[#FF6C37]" size={36} />
+                <Loader2 className="text-[var(--brand-primary)]" size={36} />
               </motion.div>
               <span className="text-xs text-[#999] font-semibold tracking-widest mt-4">
                 {response?.isWorkflow ? "EXECUTING WORKFLOW..." : "SENDING REQUEST..."}
@@ -374,7 +401,7 @@ export default function ResponsePane({ height }) {
                 <Editor
                   height="100%"
                   defaultLanguage="json"
-                  value={response.isWorkflow ? JSON.stringify(response, null, 2) : JSON.stringify(response.data, null, 2)}
+                  value={response.isWorkflow ? JSON.stringify(response, null, 2) : (typeof response.data === 'string' ? response.data : JSON.stringify(response.data, null, 2))}
                   theme="vs-dark"
                   onMount={(editor) => { editorRef.current = editor; }}
                   options={{
@@ -392,10 +419,15 @@ export default function ResponsePane({ height }) {
               {activeTab === 'Cookies' && (
                 <div className="h-full overflow-auto p-4">
                   {Object.keys(response.cookies || {}).length > 0 ? (
-                    <div className="text-xs text-[#999] font-mono">
-                      {JSON.stringify(response.cookies, null, 2)}
+                    <div className="space-y-2">
+                        {Object.entries(response.cookies).map(([key, val]) => (
+                            <div key={key} className="bg-[#111] border border-[#222] rounded p-3 text-xs flex flex-col gap-1">
+                                <span className="font-bold text-[#EDEDED] font-mono">{key}</span>
+                                <span className="text-[#888] font-mono break-all">{val}</span>
+                            </div>
+                        ))}
                     </div>
-                  ) : <div className="text-center text-[#444] mt-10">No cookies found</div>}
+                  ) : <div className="text-center text-[#444] mt-10">No cookies were returned by the server.</div>}
                 </div>
               )}
               {activeTab === 'Headers' && (
@@ -403,7 +435,9 @@ export default function ResponsePane({ height }) {
                   {Object.entries(response.headers || {}).map(([k, v]) => (
                     <div key={k} className="grid grid-cols-[200px_1fr] gap-4 py-2 border-b border-[#1A1A1A]">
                       <div className="text-xs font-bold text-[#EDEDED] font-mono">{k}</div>
-                      <div className="text-xs text-[#666] font-mono break-all">{v}</div>
+                      <div className="text-xs text-[#666] font-mono break-all">
+                        {Array.isArray(v) ? v.join('; ') : v}
+                      </div>
                     </div>
                   ))}
                 </div>

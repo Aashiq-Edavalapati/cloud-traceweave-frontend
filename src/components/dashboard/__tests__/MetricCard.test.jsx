@@ -24,49 +24,28 @@ describe('MetricCard Component', () => {
         render(<MetricCard {...mockProps} />);
 
         expect(screen.getByText('+12%')).toBeInTheDocument();
-        expect(screen.getByText('vs last hr')).toBeInTheDocument();
+        expect(screen.getByText('vs last hour')).toBeInTheDocument();
     });
 
     it('applies correct color for bad upward trend', () => {
         // trendUpBad is true by default. +12% should be bad (red)
-        const { container } = render(<MetricCard {...mockProps} />);
-        // Find the trend container. We can look for the text's parent or check class presence logic
-        // The text color logic is: ${isBad ? 'text-red-400' : 'text-emerald-400'}
-        // isPositive=+ isBad=true -> red
+        render(<MetricCard {...mockProps} />);
         const trendElement = screen.getByText('+12%').parentElement;
         expect(trendElement).toHaveClass('text-red-400');
     });
 
     it('applies correct color for good upward trend', () => {
         render(<MetricCard {...mockProps} trendUpBad={false} />);
-        // trendUpBad=false. +12% should be good (emerald)
+        // trendUpBad=false. +12% should be good (green)
         const trendElement = screen.getByText('+12%').parentElement;
-        expect(trendElement).toHaveClass('text-emerald-400');
+        expect(trendElement).toHaveClass('text-green-400');
     });
 
     it('applies correct color for good downward trend (default trendUpBad=true)', () => {
         render(<MetricCard {...mockProps} trend="-10%" />);
-        // trendUpBad=true. -10% is NOT positive. isBad = !isPositive = !false = true wait.
-
-        // logic:
-        // isPositive = trend.startsWith('+')
-        // isBad = trendUpBad ? isPositive : !isPositive
-
-        // Case: trend="-10%" (negative)
-        // isPositive = false
-        // trendUpBad = true (default)
-        // isBad = true ? false : !false = true (Wait, if trendUpBad=true, then 'up' is bad. So 'down' must be good?)
-
-        // Let's re-read the code logic in MetricCard.jsx:
-        // const isBad = trendUpBad ? isPositive : !isPositive;
-
-        // if trendUpBad=true (default):
-        // if + : isPositive=true -> isBad=true. Correct.
-        // if - : isPositive=false -> isBad=false. Correct. Down is good.
-
-        // So for trend="-10%", isBad should be false -> emerald.
-
+        // Logic: trend="-10%", isPositive=false. isBad = false.
+        // Result should be "Good" -> green
         const trendElement = screen.getByText('-10%').parentElement;
-        expect(trendElement).toHaveClass('text-emerald-400');
+        expect(trendElement).toHaveClass('text-green-400'); 
     });
 });

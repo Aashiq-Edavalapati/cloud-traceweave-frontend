@@ -39,9 +39,9 @@ export const TechStackTicker = () => {
     return (
       <motion.div
         whileHover={{ scale: 1.05, y: -5 }}
-        className="flex items-center gap-3 px-6 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full hover:border-brand-orange/40 hover:bg-white/10 transition-all cursor-default group"
+        className="flex items-center gap-3 px-6 py-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full hover:border-brand-primary/40 hover:bg-white/10 transition-all cursor-default group"
       >
-        <div className="w-5 h-5 text-white/60 group-hover:text-brand-orange transition-colors">
+        <div className="w-5 h-5 text-white/60 group-hover:text-brand-primary transition-colors">
           {IconComponent && <IconComponent />}
         </div>
         <span className="text-white/70 font-medium text-sm group-hover:text-white transition-colors">

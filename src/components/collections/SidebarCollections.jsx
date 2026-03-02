@@ -1,4 +1,5 @@
 'use client';
+
 import {
   DndContext,
   closestCenter,
@@ -8,11 +9,11 @@ import {
   useSensors,
   DragOverlay,
 } from '@dnd-kit/core';
+import { createPortal } from 'react-dom';
+import { useEffect, useState } from 'react';
+import { SortableCollection } from './SortableCollection';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useAppStore } from '@/store/useAppStore';
-import { SortableCollection } from './SortableCollection';
-import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 
 export default function SidebarCollections() {
   const {
@@ -23,13 +24,19 @@ export default function SidebarCollections() {
     moveCollection,
     getFilteredCollections
   } = useAppStore();
+  
   const collections = getFilteredCollections();
+  
+  // CRITICAL: Only pass root-level collections to the primary sortable context
+  const rootCollections = collections.filter(c => !c.parentId);
 
   const [activeDragItem, setActiveDragItem] = useState(null);
   const [mounted, setMounted] = useState(false);
+  
   useEffect(() => {
     setMounted(true);
   }, []);
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor)
@@ -43,7 +50,6 @@ export default function SidebarCollections() {
     if (type === 'collection') {
       item = collections.find(c => c.id === active.id);
     } else {
-      // Request
       for (const col of collections) {
         const found = col.items.find((i) => i.id === active.id);
         if (found) {
@@ -72,7 +78,7 @@ export default function SidebarCollections() {
   };
 
   const handleRequestClick = (id) => {
-    openTab(id, true); // Preview
+    openTab(id, true);
   };
 
   return (
@@ -84,10 +90,10 @@ export default function SidebarCollections() {
     >
       <div className="flex-1 overflow-y-auto px-2 py-2 custom-scrollbar">
         <SortableContext
-          items={collections.map((c) => c.id)}
+          items={rootCollections.map((c) => c.id)}
           strategy={verticalListSortingStrategy}
         >
-          {collections.map((col) => (
+          {rootCollections.map((col) => (
             <SortableCollection
               key={col.id}
               collection={col}
@@ -96,12 +102,12 @@ export default function SidebarCollections() {
               onRequestClick={handleRequestClick}
             />
           ))}
-          {collections.length === 0 && (
+          {rootCollections.length === 0 && (
             <div className="p-4 text-center text-xs text-text-secondary flex flex-col gap-2">
-              <span>No collections found ({collections.length}).</span>
+              <span>No collections found.</span>
               <button
                 onClick={() => useAppStore.getState().fetchCollections(useAppStore.getState().activeWorkspaceId)}
-                className="text-brand-orange hover:underline"
+                className="text-brand-primary hover:underline"
               >
                 Refresh
               </button>
@@ -114,7 +120,7 @@ export default function SidebarCollections() {
           <DragOverlay>
             {activeDragItem ? (
               <div className="bg-bg-panel border border-brand-blue/50 shadow-2xl rounded opacity-90 p-2 w-[240px] flex items-center gap-2">
-                <span className="text-[10px] font-mono text-brand-orange">
+                <span className="text-[10px] font-mono text-brand-primary">
                   MOVING
                 </span>
                 <span className="text-xs text-text-primary font-semibold">

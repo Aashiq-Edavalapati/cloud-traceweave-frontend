@@ -65,7 +65,7 @@ export default function UnsavedChangesModal({
                     </button>
                     <button 
                         onClick={onSave}
-                        className="px-4 py-2 text-xs font-bold text-white bg-brand-orange hover:bg-orange-600 rounded shadow-sm transition-colors"
+                        className="px-4 py-2 text-xs font-bold text-white bg-brand-primary hover:bg-brand-glow rounded shadow-sm transition-colors"
                     >
                         Save
                     </button>

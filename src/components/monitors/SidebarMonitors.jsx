@@ -102,7 +102,7 @@ export default function SidebarMonitors() {
                             className={`
                                 group flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors select-none relative
                                 ${activeTabId === monitor.id
-                                    ? 'bg-bg-input text-text-primary border-l-2 border-brand-orange'
+                                    ? 'bg-bg-input text-text-primary border-l-2 border-brand-primary'
                                     : 'text-text-secondary hover:bg-bg-panel hover:text-text-primary border-l-2 border-transparent'}
                             `}
                         >
@@ -111,7 +111,7 @@ export default function SidebarMonitors() {
                                 {monitor.status ? (
                                     renderStatus(monitor.status)
                                 ) : (
-                                    <Activity size={14} className={activeTabId === monitor.id ? 'text-brand-orange' : 'text-text-secondary'} />
+                                    <Activity size={14} className={activeTabId === monitor.id ? 'text-brand-primary' : 'text-text-secondary'} />
                                 )}
                             </div>
 
