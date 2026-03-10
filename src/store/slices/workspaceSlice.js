@@ -12,29 +12,65 @@ export const createWorkspaceSlice = (set, get) => ({
 
     fetchWorkspaces: async () => {
         try {
-        set({ isLoadingWorkspaces: true });
-        const response = await workspaceApi.getMyWorkspaces();
-        const workspaces = response.data || [];
-        
-        let activeId = get().activeWorkspaceId;
-        if (!activeId && workspaces.length > 0) {
-            activeId = workspaces[0].id;
-        }
+            set({ isLoadingWorkspaces: true });
+            const response = await workspaceApi.getMyWorkspaces();
+            
+            // The backend now returns workspaces with a flattened 'isFavorite' 
+            // and 'myRole' based on the WorkspaceMember table.
+            const workspaces = response.data || [];
 
+            // --- RESTORED ACTIVE WORKSPACE LOGIC ---
+            let activeId = get().activeWorkspaceId;
+            
+            // If no active ID is set (initial load), default to the first workspace
+            if (!activeId && workspaces.length > 0) {
+                activeId = workspaces[0].id;
+            }
+
+            set({
+                availableWorkspaces: workspaces,
+                activeWorkspaceId: activeId,
+                isLoadingWorkspaces: false,
+                // Update members for the currently active workspace
+                workspaceMembers: workspaces.find(w => w.id === activeId)?.members || []
+            });
+
+            // Trigger data fetching for the active workspace (Collections/Envs)
+            if (activeId) {
+                get().fetchWorkspaceData(activeId);
+            }
+        } catch (error) {
+            console.warn("Failed to fetch workspaces", error);
+            set({ isLoadingWorkspaces: false, availableWorkspaces: [] });
+        }
+    },
+
+    // toggle favorite status in the DB
+    toggleFavorite: async (workspaceId) => {
+        const { availableWorkspaces } = get();
+        const workspace = availableWorkspaces.find(w => w.id === workspaceId);
+        if (!workspace) return;
+
+        const newStatus = !workspace.isFavorite;
+
+        // Optimistic Update: Update UI immediately for a snappy feel
         set({
-            availableWorkspaces: workspaces,
-            activeWorkspaceId: activeId,
-            isLoadingWorkspaces: false,
-            workspaceMembers: workspaces.find(w => w.id === activeId)?.members || []
+            availableWorkspaces: availableWorkspaces.map(ws => 
+                ws.id === workspaceId ? { ...ws, isFavorite: newStatus } : ws
+            )
         });
 
-        if (activeId) {
-            // Accessing actions from other slices via get()
-            get().fetchWorkspaceData(activeId);
-        }
+        try {
+            // Persist to the WorkspaceMember table in the DB
+            await workspaceApi.updateFavoriteStatus(workspaceId, { isFavorite: newStatus });
         } catch (error) {
-        console.warn("Failed to fetch workspaces", error);
-        set({ isLoadingWorkspaces: false, availableWorkspaces: [] });
+            // Rollback on failure
+            set({
+                availableWorkspaces: availableWorkspaces.map(ws => 
+                    ws.id === workspaceId ? { ...ws, isFavorite: !newStatus } : ws
+                )
+            });
+            console.error("Failed to persist favorite status", error);
         }
     },
 
@@ -252,4 +288,57 @@ export const createWorkspaceSlice = (set, get) => ({
             return { success: false, error: msg };
         }
     },
+
+    updateWorkspace: async (id, data) => {
+        try {
+            const response = await workspaceApi.updateWorkspace(id, data);
+            const updatedWorkspace = response.data;
+            
+            set(state => ({
+                availableWorkspaces: state.availableWorkspaces.map(ws => 
+                    ws.id === id ? { ...ws, ...updatedWorkspace } : ws
+                )
+            }));
+            return { success: true, workspace: updatedWorkspace };
+        } catch (error) {
+            return { success: false, error: error.response?.data?.message || error.message };
+        }
+    },
+
+    deleteWorkspace: async (id) => {
+        try {
+            await workspaceApi.deleteWorkspace(id);
+            const currentActive = get().activeWorkspaceId;
+            
+            set(state => {
+                const filtered = state.availableWorkspaces.filter(ws => ws.id !== id);
+                return {
+                    availableWorkspaces: filtered,
+                    activeWorkspaceId: currentActive === id 
+                        ? (filtered.length > 0 ? filtered[0].id : null) 
+                        : currentActive
+                };
+            });
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error.response?.data?.message || error.message };
+        }
+    },
+
+    duplicateWorkspace: async (id) => {
+        try {
+            set({ isLoadingWorkspaces: true });
+            const response = await workspaceApi.duplicateWorkspace(id);
+            const newWorkspace = response.data;
+
+            set(state => ({
+                availableWorkspaces: [...state.availableWorkspaces, newWorkspace],
+                isLoadingWorkspaces: false
+            }));
+            return { success: true, workspace: newWorkspace };
+        } catch (error) {
+            set({ isLoadingWorkspaces: false });
+            return { success: false, error: error.response?.data?.message || error.message };
+        }
+    }
 });

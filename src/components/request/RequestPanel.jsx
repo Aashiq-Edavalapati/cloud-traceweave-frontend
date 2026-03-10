@@ -26,7 +26,7 @@ export default function RequestPanel() {
   const [containerWidth, setContainerWidth] = useState(1000); // Default safe width
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // 1. ✨ THE FIX: Accurately measure the parent container's width
+  // 1. Accurately measure the parent container's width
   useEffect(() => {
     if (!containerRef.current) return;
 

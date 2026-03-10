@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { requestApi } from '@/api/request.api';
 import { useAppStore } from '@/store/useAppStore';
+import { useModal } from '@/components/providers/ModalProvider';
 
 const INTROSPECTION_QUERY = `
   query IntrospectionQuery {
@@ -20,6 +21,7 @@ const INTROSPECTION_QUERY = `
 
 export function useGraphqlSchema(activeId) {
   const store = useAppStore();
+  const { showAlert } = useModal();
   const [schema, setSchema] = useState(null);
   const [isFetchingSchema, setIsFetchingSchema] = useState(false);
 
@@ -34,7 +36,7 @@ export function useGraphqlSchema(activeId) {
   const handleFetchSchema = async () => {
     const activeReqState = store.requestStates[activeId];
     if (!activeReqState?.config?.url) {
-      alert("Please enter a valid GraphQL URL first.");
+      showAlert("Please enter a valid GraphQL URL first.");
       return;
     }
       
@@ -62,7 +64,7 @@ export function useGraphqlSchema(activeId) {
         throw new Error("Invalid GraphQL endpoint or schema introspection disabled.");
       }
     } catch (e) {
-      alert(`Failed to fetch schema: ${e.message}`);
+      showAlert(`Failed to fetch schema: ${e.message}`);
     } finally {
       setIsFetchingSchema(false);
     }

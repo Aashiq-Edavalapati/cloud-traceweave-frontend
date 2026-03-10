@@ -16,6 +16,7 @@ import HeadersEditor from '../HeadersEditor';
 
 import CookieManagerModal from '../CookieManagerModal';
 import SaveRequestModal from '@/components/request/SaveRequestModal';
+import CurlManagerModal from './http/CurlManagerModal';
 
 export default function HttpRequestPanel({ activeId }) {
   const store = useAppStore();
@@ -24,9 +25,9 @@ export default function HttpRequestPanel({ activeId }) {
   const [configTab, setConfigTab] = useState('Params');
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
+  const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
   
   const { startResize } = useResponseResize();
-
   useUrlParamsSync(activeId);
 
   const getDomainFromUrl = (url) => {
@@ -46,6 +47,7 @@ export default function HttpRequestPanel({ activeId }) {
         setConfigTab={setConfigTab}
         onOpenSaveModal={() => setIsSaveModalOpen(true)}
         onOpenCookieModal={() => setIsCookieModalOpen(true)}
+        onOpenCodeModal={() => setIsCodeModalOpen(true)}
       />
 
       {/* --- CONTENT SWITCHER --- */}
@@ -82,6 +84,12 @@ export default function HttpRequestPanel({ activeId }) {
         isOpen={isCookieModalOpen} 
         onClose={() => setIsCookieModalOpen(false)}
         initialDomain={getDomainFromUrl(activeReqState.config?.url)}
+      />
+
+      <CurlManagerModal 
+        isOpen={isCodeModalOpen}
+        onClose={() => setIsCodeModalOpen(false)}
+        requestConfig={activeReqState.config}
       />
     </div>
   );

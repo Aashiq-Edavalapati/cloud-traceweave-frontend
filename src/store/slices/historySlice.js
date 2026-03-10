@@ -20,7 +20,7 @@ export const createHistorySlice = (set, get) => ({
             }
             
             const fetchedLogs = data.data || [];
-            const newLogs = page === 1 ? fetchedLogs : [...state.historyLogs, ...fetchedLogs];
+            const newLogs = fetchedLogs;
             
             set({ 
                 historyLogs: newLogs, 

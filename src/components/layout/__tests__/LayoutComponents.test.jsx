@@ -34,6 +34,14 @@ jest.mock('react-dom', () => ({
   createPortal: (node) => node,
 }));
 
+jest.mock('@/api/workspace.api', () => ({
+  workspaceApi: {
+    getMyWorkspaces: jest.fn().mockResolvedValue({ data: [] }),
+    getGlobalHistory: jest.fn().mockResolvedValue({ data: [] }),
+    getGlobalStats: jest.fn().mockResolvedValue({ data: {} }),
+  }
+}));
+
 // Mock UI/Child components
 jest.mock('@/components/ui/Dropdown', () => {
   return function MockDropdown() {
@@ -148,6 +156,8 @@ jest.mock('lucide-react', () => ({
   Trash: () => <span data-testid="icon-trash-2" />,
   Clock: () => <span data-testid="icon-clock" />,
   Box: () => <span data-testid="icon-box" />,
+  GitBranch: () => <span data-testid="icon-git-branch" />,
+  GitMerge: () => <span data-testid="icon-git-merge" />,
 }));
 
 describe('Layout Components', () => {

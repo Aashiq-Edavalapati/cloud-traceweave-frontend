@@ -21,5 +21,10 @@ export const authApi = {
         const response = await api.get('/auth/me');
         console.log("getMe response:", response.data);
         return response.data;
+    },
+
+    updateProfile: async (profileData) => {
+        const response = await api.put('/auth/profile', profileData);
+        return response.data;
     }
 };

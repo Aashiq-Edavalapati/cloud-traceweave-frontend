@@ -47,6 +47,18 @@ export const useAuthStore = create((set) => ({
     }
   },
 
+  // Update Profile
+  updateProfile: async (profileData) => {
+    try {
+      const data = await authApi.updateProfile(profileData);
+      set({ user: data.user, isAuthenticated: true });
+      return data;
+    } catch (error) {
+      console.warn('Profile update failed', error);
+      throw error;
+    }
+  },
+
   // Logout
   logout: async () => {
     try {

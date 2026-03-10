@@ -2,11 +2,12 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
-import MainSidebar from '@/components/layout/MainSidebar';
-import Header from '@/components/layout/Header';
 import ResizablePanel from '@/components/layout/ResizablePanel';
 import RequestPanel from '@/components/request/RequestPanel';
 import DashboardPanel from '@/components/dashboard/DashboardPanel';
+import WorkflowList from '@/components/workflow/WorkflowList';
+import WorkflowCanvas from '@/components/workflow/WorkflowCanvas';
+import WorkspaceSettings from '@/components/workspace/WorkspaceSettings';
 import { useAppStore } from '@/store/useAppStore';
 
 const SIDEBAR_MAPPING = {
@@ -14,47 +15,56 @@ const SIDEBAR_MAPPING = {
     monitor: 'Monitor',
     environments: 'Environments',
     history: 'History',
-    apis: 'APIs'
+    apis: 'APIs',
+    workflows: 'Workflows',
+    settings: 'Settings' 
 };
 
 export default function WorkspaceEditor() {
     const { workspaceId, tab } = useParams();
-    const { activeView, setActiveWorkspace, setActiveSidebarItem } = useAppStore();
+    const { activeView, setActiveWorkspace, setActiveSidebarItem, setActiveView } = useAppStore();
 
-    // ✅ Set active workspace from URL
+    const currentRoute = tab && tab[0] ? tab[0].toLowerCase() : null;
+    const isWorkflowRoute = currentRoute === 'workflows';
+    const isSettingsRoute = currentRoute === 'settings';
+    const workflowId = isWorkflowRoute && tab.length > 1 ? tab[1] : null;
+
     useEffect(() => {
         if (workspaceId) {
             setActiveWorkspace(workspaceId);
         }
     }, [workspaceId, setActiveWorkspace]);
 
-    // ✅ Sync URL → Zustand state (ONLY ONE DIRECTION)
     useEffect(() => {
-        if (tab && tab[0]) {
-            const urlItem = tab[0].toLowerCase();
-            const mappedTab = SIDEBAR_MAPPING[urlItem] || 'Collections';
+        if (currentRoute) {
+            const mappedTab = SIDEBAR_MAPPING[currentRoute] || 'Collections';
             setActiveSidebarItem(mappedTab);
+            
+            if (isWorkflowRoute) setActiveView('workflow');
+            else if (isSettingsRoute) setActiveView('settings');
+            else if (currentRoute === 'dashboard') setActiveView('dashboard');
+            else setActiveView('runner');
         } else {
             setActiveSidebarItem('Collections');
+            setActiveView('runner');
         }
-    }, [tab, setActiveSidebarItem]);
+    }, [currentRoute, isWorkflowRoute, isSettingsRoute, setActiveSidebarItem, setActiveView]);
+
+    if (activeView === 'dashboard') return <DashboardPanel />;
+    
+    if (activeView === 'workflow') {
+        if (workflowId) return <WorkflowCanvas workflowId={workflowId} />;
+        return <WorkflowList />;
+    }
+
+    if (activeView === 'settings') {
+        return <WorkspaceSettings />;
+    }
 
     return (
-        <div className="fixed inset-0 flex bg-transparent text-text-primary overflow-hidden">
-            <MainSidebar workspaceId={workspaceId} />
-            <div className="flex-1 flex flex-col min-w-0">
-                <Header workspaceId={workspaceId} />
-                <div className="flex-1 flex overflow-hidden relative">
-                    {activeView === 'dashboard' ? (
-                        <DashboardPanel />
-                    ) : (
-                        <>
-                            <ResizablePanel />
-                            <RequestPanel />
-                        </>
-                    )}
-                </div>
-            </div>
-        </div>
+        <>
+            <ResizablePanel />
+            <RequestPanel />
+        </>
     );
 }

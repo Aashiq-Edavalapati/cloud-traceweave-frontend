@@ -1,14 +1,20 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, X } from 'lucide-react';
 
-export const FilterPopover = ({ isOpen, onClose, pendingFilters, setPendingFilters, onApply }) => {
+export const FilterPopover = ({ 
+    isOpen, 
+    onClose, 
+    pendingFilters, 
+    setPendingFilters, 
+    onApply 
+}) => {
     if (!isOpen) return null;
 
     const togglePending = (category, value) => {
         setPendingFilters(prev => {
-            const current = prev[category];
+            const current = prev[category] || [];
             const updated = current.includes(value)
                 ? current.filter(item => item !== value)
                 : [...current, value];
@@ -16,65 +22,89 @@ export const FilterPopover = ({ isOpen, onClose, pendingFilters, setPendingFilte
         });
     };
 
+    const handleReset = () => {
+        setPendingFilters({ type: [], access: [] });
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute top-full right-0 mt-2 w-64 bg-bg-panel border border-border-strong rounded-lg shadow-2xl z-50 overflow-hidden"
+            className="absolute top-full right-0 mt-2 w-64 glass-strong border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden"
         >
-            <div className="p-3 border-b border-border-subtle bg-bg-sidebar/50">
-                <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider">Filter View</h4>
+            {/* Header */}
+            <div className="px-4 py-3 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
+                <h4 className="text-[10px] font-black text-text-muted uppercase tracking-[0.15em]">Filter Workspaces</h4>
+                <button 
+                    onClick={onClose}
+                    className="text-text-muted hover:text-white transition-colors"
+                >
+                    <X size={14} />
+                </button>
             </div>
 
-            <div className="p-2 space-y-4">
+            <div className="p-3 space-y-5">
+                {/* Workspace Type Section */}
                 <div>
-                    <p className="text-[11px] text-text-secondary mb-2 px-2 font-medium">Workspace Type</p>
+                    <p className="text-[10px] font-bold text-text-secondary mb-2.5 px-1 uppercase tracking-wider">Workspace Type</p>
                     <div className="space-y-1">
-                        {['Team', 'Personal', 'Public'].map(type => (
-                            <button
-                                key={type}
-                                onClick={() => togglePending('type', type)}
-                                className={`w-full flex items-center justify-between px-2 py-1.5 text-xs rounded-md transition-colors ${pendingFilters.type.includes(type) ? 'bg-brand-primary/10 text-brand-primary' : 'text-text-muted hover:bg-white/5 hover:text-text-primary'
+                        {['Personal', 'Team'].map(type => {
+                            const isSelected = pendingFilters.type.includes(type);
+                            return (
+                                <button
+                                    key={type}
+                                    onClick={() => togglePending('type', type)}
+                                    className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl transition-all duration-200 ${
+                                        isSelected 
+                                        ? 'bg-brand-primary/10 text-brand-primary border border-brand-primary/20' 
+                                        : 'text-text-muted border border-transparent hover:bg-white/5 hover:text-text-primary'
                                     }`}
-                            >
-                                <span>{type}</span>
-                                {pendingFilters.type.includes(type) && <CheckCircle2 size={12} />}
-                            </button>
-                        ))}
+                                >
+                                    <span className="font-medium">{type}</span>
+                                    {isSelected && <CheckCircle2 size={14} className="animate-in zoom-in-50" />}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 
+                {/* Access Level Section */}
                 <div>
-                    <p className="text-[11px] text-text-secondary mb-2 px-2 font-medium">Access Level</p>
+                    <p className="text-[10px] font-bold text-text-secondary mb-2.5 px-1 uppercase tracking-wider">Access Level</p>
                     <div className="space-y-1">
-                        {['Private', 'Restricted', 'Public'].map(access => (
-                            <button
-                                key={access}
-                                onClick={() => togglePending('access', access)}
-                                className={`w-full flex items-center justify-between px-2 py-1.5 text-xs rounded-md transition-colors ${pendingFilters.access.includes(access) ? 'bg-brand-blue/10 text-brand-blue' : 'text-text-muted hover:bg-white/5 hover:text-text-primary'
+                        {['Private', 'Shared'].map(access => {
+                            const isSelected = pendingFilters.access.includes(access);
+                            return (
+                                <button
+                                    key={access}
+                                    onClick={() => togglePending('access', access)}
+                                    className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl transition-all duration-200 ${
+                                        isSelected 
+                                        ? 'bg-brand-primary/10 text-brand-primary border border-brand-primary/20' 
+                                        : 'text-text-muted border border-transparent hover:bg-white/5 hover:text-text-primary'
                                     }`}
-                            >
-                                <span>{access}</span>
-                                {pendingFilters.access.includes(access) && <CheckCircle2 size={12} />}
-                            </button>
-                        ))}
+                                >
+                                    <span className="font-medium">{access}</span>
+                                    {isSelected && <CheckCircle2 size={14} className="animate-in zoom-in-50" />}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
 
-            <div className="p-2 border-t border-border-subtle bg-bg-sidebar/30 flex justify-between gap-2">
+            {/* Footer Actions */}
+            <div className="p-2 border-t border-white/5 bg-black/20 flex items-center justify-between gap-2">
                 <button
-                    onClick={() => {
-                        setPendingFilters({ type: [], access: [] });
-                    }}
-                    className="px-3 py-1 text-xs text-text-muted hover:text-text-primary"
+                    onClick={handleReset}
+                    className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-white transition-colors"
                 >
                     Reset
                 </button>
                 <button
                     onClick={onApply}
-                    className="px-4 py-1.5 text-xs bg-brand-primary text-white rounded hover:bg-brand-glow font-medium transition-colors"
+                    className="px-4 py-2 text-[10px] font-black uppercase tracking-widest bg-brand-primary text-brand-surface rounded-lg hover:bg-brand-glow transition-all shadow-glow-sm"
                 >
                     Apply Filters
                 </button>

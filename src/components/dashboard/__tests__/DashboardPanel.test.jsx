@@ -15,21 +15,20 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 
-// Mock Recharts RecursiveContainer and Charts to avoid complex SVG issues and ResizeObserver strictness,
-// though we added a ResizeObserver mock in setup.
-// It's often cleaner to verify they are rendered rather than testing the library's internal rendering.
+// Mock Recharts RecursiveContainer and Charts to avoid complex SVG issues and ResizeObserver strictness
 jest.mock('recharts', () => ({
     ResponsiveContainer: ({ children }) => <div data-testid="responsive-container">{children}</div>,
-    AreaChart: ({ children }) => <div data-testid="area-chart">{children}</div>,
-    Area: () => <div />,
-    XAxis: () => <div />,
-    YAxis: () => <div />,
-    CartesianGrid: () => <div />,
-    Tooltip: () => <div />,
-    BarChart: ({ children }) => <div data-testid="bar-chart">{children}</div>,
-    Bar: () => <div />,
-    Cell: () => <div />,
-    ReferenceLine: () => <div />,
+    // Wrap children in <svg> so JSDOM recognizes SVG-specific tags like <defs>
+    AreaChart: ({ children }) => <svg data-testid="area-chart">{children}</svg>,
+    Area: () => <g />,
+    XAxis: () => <g />,
+    YAxis: () => <g />,
+    CartesianGrid: () => <g />,
+    Tooltip: () => <g />,
+    BarChart: ({ children }) => <svg data-testid="bar-chart">{children}</svg>,
+    Bar: () => <g />,
+    Cell: () => <g />,
+    ReferenceLine: () => <g />,
 }));
 
 // Mock lucide-react icons
